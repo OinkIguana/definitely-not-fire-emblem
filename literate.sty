@@ -1,0 +1,36 @@
+\usepackage{listings}
+\usepackage{color}
+\lstloadlanguages{Haskell}
+
+\definecolor{comment}{rgb}{0.6, 0.6, 0.6}
+\definecolor{string}{rgb}{0.6, 0.26, 0.26}
+
+\lstnewenvironment{code}
+  {\lstset{}%
+    \csname lst@SetFirstLabel\endcsname}
+  {\csname lst@SaveFirstLabel\endcsname}
+  \lstset{
+    language=Haskell,
+    basicstyle=\small\ttfamily,
+    flexiblecolumns=false,
+    basewidth={0.5em,0.45em},
+    keywordstyle=\color{blue},
+    commentstyle=\color{comment},
+    stringstyle=\color{string},
+    breaklines=true,
+    frame=tb,
+    aboveskip=1cm,
+    belowskip=1cm,
+    showstringspaces=false,
+    literate={+}{{$+$}}1 {/}{{$/$}}1 {*}{{$*$}}1 {=}{{$=$}}1
+             {>}{{$>$}}1 {<}{{$<$}}1 {\\}{{$\lambda$}}1
+             {\\\\}{{\char"5C\char"5C}}1
+             {->}{{$\rightarrow$}}2 {>=}{{$\geq$}}2 {<-}{{$\leftarrow$}}2
+             {<=}{{$\leq$}}2 {=>}{{$\Rightarrow$}}2
+             {\ .}{{$\circ$}}2 {\ .\ }{{$\circ$}}2
+             {>>}{{>>}}2 {>>=}{{>>=}}2
+             {|}{{$\mid$}}1
+  }
+
+\newcommand{\ident}[1]{\texttt{#1}}
+\newcommand{\module}[2][]{\noindent\textbf{\if #1\empty\else {\large #1.}\fi{\huge #2}}\medskip}

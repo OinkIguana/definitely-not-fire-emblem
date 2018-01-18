@@ -1,10 +1,11 @@
-module Main where
+\begin{code}
+module Lib (play) where
   import Control.Concurrent
-  import Model
+  import Lib.Model
 
-  main :: IO ()
-  main = do
-    model <- newMVar startGame
+  play :: IO ()
+  play = do
+    model <- newMVar newGame
     forkIO $ do
       -- Rendering thread
       return ()
@@ -15,3 +16,5 @@ module Main where
       -- Game loop thread
       return ()
     -- Interaction thread
+    return ()
+\end{code}
