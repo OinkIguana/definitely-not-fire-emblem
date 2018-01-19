@@ -29,8 +29,8 @@ In that sense, an \ident{Action} can be simply thought of as a mapping from one 
 \begin{code}
   data Game = Game
     { settings :: Settings
-    , scene    :: Scene
     , graphics :: [Sprite]
+    , room     :: Room
     }
 
   newtype Action = Action (Game -> IO Game)
@@ -48,18 +48,49 @@ experience accordingly.
     }
 \end{code}
 
-At a very high level, a game consists of just a few \ident{Scene}s. Each scene has an almost
-entirely distinct set of relevant updaters to manage its own internal state, so they are broken up
-and a currently visible scene is stored at the highest level of the \ident{Game} structure.
+A \ident{Sprite} exists solely for rendering purposes. Though some elements of the game can be
+rendered based simply on the state of the \ident{Room}, the more complex items require the use of
+a \ident{Sprite} -- things such as animations and special effects.
 
-In this case, the \ident{Menu} scenes are rather similar so they hold a shared record format,
-the \ident{Menu}, while a \ident{Battle} scene is the more interesting one in which the gameplay
+\begin{code}
+  newtype Sprite = Sprite SpriteEffect
+
+  -- TODO: put these into another file?
+  data Point     = Point     Int Int
+  data Direction = Direction Int Int
+  data Rectangle = Rectangle Int Int Int Int
+
+  data Texture = Texture -- TODO: how are images represented?
+  data Font = Font -- TODO: how are fonts represented?
+
+  data SpriteBase
+    = Static Texture Rectangle
+    | Animation Texture [Rectangle] Int
+    | AnimationCycle Texture [Rectangle] Int
+    | StaticText Text Font
+
+  data SpriteEffect
+    = Base SpriteBase
+    | Position Point SpriteEffect
+    | Movement Point Point SpriteEffect
+    | ColourBlend (Colour Double) SpriteEffect -- TODO: does this require a blend mode
+    | ParticleSystem Point [Point] SpriteEffect
+    | Sequence [Sprite]
+\end{code}
+
+
+At a very high level, a game consists of just a few \ident{Room}s. Each room has an almost
+entirely distinct set of relevant updaters to manage its own internal state, so they are broken up
+and a currently visible room is stored at the highest level of the \ident{Game} structure.
+
+In this case, the \ident{Menu} rooms are rather similar so they hold a shared record format,
+the \ident{Menu}, while a \ident{Battle} roome is the more interesting one in which the gameplay
 actually takes place.
 
 \begin{code}
-  data Scene
+  data Room
     = MainMenu Menu
-    | PauseMenu Menu Scene
+    | PauseMenu Menu Room
     | Battle
       { players      :: [Player]
       , board        :: Board
@@ -107,32 +138,40 @@ a set of \ident{Unit}s available to them.
       }
 
   data Strategy = Strategy -- TODO
+\end{code}
 
+The \ident{Unit} is probably the most complicated part of the whole model. Each unit represents a
+single unit on the battlefield, capable of moving around, attacking things, and interacting with
+others. To determine all the specifics of each unit, they are made up of a number of other
+components.
+
+The first is the role, which defines what kind of unit they are. ``Class'' would have been a better
+name for them, but sadly \texttt{class} is a keyword in Haskell, so we'll have to settle for role.
+
+Next is the name, which is pretty self explanatory and exists solely for the player's benefit.
+
+The stats are what determines the unit's abilities in battle and other areas. There are many
+individual stats which make up the \ident{Stats} record, all of which will be explained elsewhere.
+
+Next is the unit's equipment. That is, what they are holding or wearing. Equipment affects units'
+stats, as well as their skills.
+
+The units skills help differentiate units, giving them their own strategic values beyond raw stats.
+There are lots of skills available, so these are listed and described separately.
+
+Finally, a unit has a sprite. Though the sprite exists only for rendering purposes, the unit needs
+to be able to perform updates on the sprite so that it provides an adequate representation of the
+unit's state to the player.
+
+\begin{code}
   data Unit = Unit
     { role      :: Role
     , name      :: Text
     , stats     :: Stats
     , equipment :: Maybe Equipment
     , skills    :: [Skill]
-    , owner     :: GameRef Player
+    , sprite    :: Sprite
     }
-
-  data Equipment = Equipment -- TODO
-
-  data Stats = Stats
-    { mhp :: Int
-    , chp :: Int
-    , atk :: Int
-    , mag :: Int
-    , def :: Int
-    , res :: Int
-    , spd :: Int
-    , mov :: Int
-    , lck :: Int
-    , skl :: Int
-    }
-
-  data Skill = Skill -- TODO
 
   data Role
     = Tank
@@ -145,9 +184,35 @@ a set of \ident{Unit}s available to them.
     | FlyerArcher
     -- TODO
 
-  newtype Board = Board
-    { grid :: Grid Tile
+  data Stats = Stats
+    -- TODO: which of these are relevant, and what else needs to be added?
+    { mhp :: Int
+    , chp :: Int
+    , atk :: Int
+    , mag :: Int
+    , def :: Int
+    , res :: Int
+    , spd :: Int
+    , mov :: Int
+    , lck :: Int
+    , skl :: Int
     }
+
+  data Equipment = Equipment -- TODO
+  data Skill = Skill -- TODO
+\end{code}
+
+The \ident{Board} is a representation of the actual battlefield. It is composed of a grid of tiles.
+
+A \ident{Tile}, then, represents one space on the \ident{Board}. Each space has a \ident{Terrain},
+which affects the units that are passing over it, and sometimes a \ident{Unit} when there should be
+one at this location.
+
+The actual terrain types are varied and each have different effects which will be explained
+elsewhere.
+
+\begin{code}
+  newtype Board = Board (Grid Tile)
 
   data Grid a = Grid
     { width  :: Int
@@ -170,13 +235,13 @@ a set of \ident{Unit}s available to them.
     | Hill
     | Road
     -- TODO
+\end{code}
 
-  data MapData = MapData
-    { board          :: Board
-    , startPositions :: [GameRef Tile]
-    }
+Finally, a \ident{GameRef} simply provides a view into the \ident{Game} model allowing a particular
+element to be quickly retrieved. This provides a sort of weak reference mechanism specific to this
+model, which may or may not actually be useful when it comes time to implement this stuff.
 
-  data Sprite = Sprite -- TODO
+\begin{code}
   newtype GameRef a = GameRef (Game -> a)
 \end{code}
 
