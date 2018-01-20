@@ -19,12 +19,12 @@ through use of \ident{Action}s the game unfolds.
 
 \begin{code}
   newGame :: Game
-  newGame = Game defaultSettings mainMenu []
+  newGame = Game defaultSettings [] mainMenu
 
   defaultSettings :: Settings
   defaultSettings = Settings True True True
 
-  mainMenu :: Scene
+  mainMenu :: Room
   mainMenu = MainMenu $ menu []
 
   menu :: [(String, Action)] -> Menu

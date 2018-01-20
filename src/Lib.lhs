@@ -18,6 +18,7 @@ module Lib (play) where
   import Control.Concurrent
   import Lib.Model
   import SDL
+  import Foreign.C.Types
 
   play :: IO ()
   play = do
@@ -32,7 +33,8 @@ standard SDL behaviour.
     window <- createWindow "Definitely Not Fire Emblem"
       ( defaultWindow
           { windowBorder = False
-          , windowMode = Fullscreen
+          , windowMode = FullscreenDesktop
+          , windowInitialSize = V2 (CInt 1920) (CInt 1080)
           }
       )
     renderer <- createRenderer window (-1)
@@ -66,11 +68,12 @@ perfect interactions, we can sacrifice consistency for speed, to some extent.
 
 \begin{code}
     forkIO $ do
-      let renderLoop =
-        clear renderer
-        -- TODO: render the game
-        present renderer
-        renderLoop
+      let
+        renderLoop = do
+          clear renderer
+          -- TODO: render the game
+          present renderer
+          renderLoop
       renderLoop
       return ()
 \end{code}
@@ -80,10 +83,11 @@ other threads, and plays the requested sounds at the next convenient opportunity
 
 \begin{code}
     forkIO $ do
-      let playSound =
-        audio <- readChan audioChannel
-        -- TODO: play the sound
-        playSound
+      let
+        playSound = do
+          audio <- readChan audioChannel
+          -- TODO: play the sound
+          playSound
       return ()
 \end{code}
 
@@ -97,6 +101,7 @@ Finally come the interaction and game loop threads.
 
     -- Interaction thread
     events <- pollEvents
+    threadDelay 4000000
     quit
 
 \end{code}

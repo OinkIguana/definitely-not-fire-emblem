@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 125f6b8643d681bd4cb237b2c6df1f944758d580d35bd20f200231efdfac6b61
+-- hash: 5b763e42a4dc05532c57af521150131fd1625a658e9936d27d248325b223e18e
 
 name:           definitely-not-fire-emblem
 version:        0.1.0.0
@@ -31,6 +31,7 @@ library
   build-depends:
       base >=4.7 && <5
     , colour
+    , sdl2
     , text
   exposed-modules:
       Lib
@@ -49,12 +50,13 @@ executable dnfe
       base >=4.7 && <5
     , colour
     , definitely-not-fire-emblem
+    , sdl2
     , text
   other-modules:
       Paths_definitely_not_fire_emblem
   default-language: Haskell2010
 
-test-suite definitely-not-fire-emblem-test
+test-suite dnfe-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   hs-source-dirs:
@@ -64,6 +66,7 @@ test-suite definitely-not-fire-emblem-test
       base >=4.7 && <5
     , colour
     , definitely-not-fire-emblem
+    , sdl2
     , text
   other-modules:
       Paths_definitely_not_fire_emblem

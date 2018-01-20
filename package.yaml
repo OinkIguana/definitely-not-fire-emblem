@@ -23,6 +23,7 @@ dependencies:
 - base >= 4.7 && < 5
 - text
 - colour
+- sdl2
 
 library:
   source-dirs: src
@@ -39,7 +40,7 @@ executables:
     - definitely-not-fire-emblem
 
 tests:
-  definitely-not-fire-emblem-test:
+  dnfe-test:
     main:                Spec.hs
     source-dirs:         test
     ghc-options:
