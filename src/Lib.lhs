@@ -16,6 +16,7 @@ user input are created. By the time this function returns, the game window is cl
 
 module Lib (play) where
   import Control.Concurrent
+  import Control.Monad
   import Lib.Model
   import SDL
   import Foreign.C.Types
@@ -67,7 +68,7 @@ threads continue to process inputs and update the model. Since this game does no
 perfect interactions, we can sacrifice consistency for speed, to some extent.
 
 \begin{code}
-    forkIO $ do
+    renderThread <- forkIO $ do
       let
         renderLoop = do
           clear renderer
@@ -82,7 +83,7 @@ The next thread is the audio thread. The audio thread awaits signals on the chan
 other threads, and plays the requested sounds at the next convenient opportunity.
 
 \begin{code}
-    forkIO $ do
+    audioThread <- forkIO $ do
       let
         playSound = do
           audio <- readChan audioChannel
@@ -91,19 +92,30 @@ other threads, and plays the requested sounds at the next convenient opportunity
       return ()
 \end{code}
 
-Finally come the interaction and game loop threads.
+Then comes the interaction loop thread. This thread is the one that processes all of the user inputs
+and performs the updates to the model.
 
 \begin{code}
-    -- TODO: are these two the same thing? how do I regulate the speed they run at?
-    forkIO $ do
-      -- Game loop thread
-      return ()
-
     -- Interaction thread
-    events <- pollEvents
-    threadDelay 4000000
-    quit
+    let
+      eventLoop :: IO ()
+      eventLoop = do
+        Event _ event <- waitEvent
+        let shouldQuit = case event of
+              KeyboardEvent (KeyboardEventData _ Pressed _ (Keysym ScancodeEscape _ _)) -> True
+              _ -> False
+        unless shouldQuit eventLoop
+    eventLoop
+\end{code}
 
+Once the event loop decides it is time to end the other threads are killed and then we shut down
+SDL. Killing the threads ensures that they end gracefully, instead of in segmentation faults or
+other strange errors.
+
+\begin{code}
+    killThread renderThread
+    killThread audioThread
+    quit
 \end{code}
 
 \end{document}
