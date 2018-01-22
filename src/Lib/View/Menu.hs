@@ -19,7 +19,7 @@ module Lib.View.Menu where
     surfaces <- mapM (Font.solid font color . fst) options
     combined <- SDL.createRGBSurface (SDL.V2 (fromIntegral width) (fromIntegral $ sep * len)) SDL.RGBA8888
     let
-      alignOption :: MonadIO m => Int -> SDL.Surface -> m (Maybe (SDL.Rectangle CInt))
+      alignOption :: Int -> SDL.Surface -> StateRC (Maybe (SDL.Rectangle CInt))
       alignOption i surface =
         SDL.surfaceBlit surface Nothing combined $
           Just $ toSDL $ Point (0 :: CInt) (fromIntegral $ i * sep)
