@@ -21,9 +21,14 @@ description:         Please see the README on Github at <https://github.com/oink
 
 dependencies:
 - base >= 4.7 && < 5
+- containers
 - text
 - colour
 - sdl2
+- sdl2-image
+- sdl2-ttf
+- symbol
+- mtl
 
 library:
   source-dirs: src

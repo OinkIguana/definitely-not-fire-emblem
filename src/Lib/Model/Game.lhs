@@ -15,8 +15,13 @@ file as it is done here.
 
 \begin{code}
 {-# LANGUAGE DuplicateRecordFields #-}
+{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE FlexibleInstances #-}
 
 module Lib.Model.Game where
+  import GHC.Generics
+  import qualified SDL
   import Data.Text (Text)
   import Data.Colour (Colour)
 \end{code}
@@ -55,26 +60,17 @@ a \ident{Sprite} -- things such as animations and special effects.
 \begin{code}
   newtype Sprite = Sprite SpriteEffect
 
-  -- TODO: put these into another file?
-  data Point     = Point     Int Int
-  data Direction = Direction Int Int
-  data Rectangle = Rectangle Int Int Int Int
-
-  data Texture = Texture -- TODO: how are images represented?
-  data Font = Font -- TODO: how are fonts represented?
-
   data SpriteBase
-    = Static Texture Rectangle
-    | Animation Texture [Rectangle] Int
-    | AnimationCycle Texture [Rectangle] Int
-    | StaticText Text Font
+    = Static SDL.Texture (Rectangle Int)
+    | Animation SDL.Texture [Rectangle Int] Int
+    | AnimationCycle SDL.Texture [Rectangle Int] Int
 
   data SpriteEffect
     = Base SpriteBase
-    | Position Point SpriteEffect
-    | Movement Point Point SpriteEffect
+    | Position (Point Int) SpriteEffect
+    | Movement (Point Int) (Point Int) SpriteEffect
     | ColourBlend (Colour Double) SpriteEffect -- TODO: does this require a blend mode
-    | ParticleSystem Point [Point] SpriteEffect
+    | ParticleSystem (Point Int) [Point Int] SpriteEffect
     | Sequence [Sprite]
 \end{code}
 
@@ -84,18 +80,20 @@ entirely distinct set of relevant updaters to manage its own internal state, so 
 and a currently visible room is stored at the highest level of the \ident{Game} structure.
 
 In this case, the \ident{Menu} rooms are rather similar so they hold a shared record format,
-the \ident{Menu}, while a \ident{Battle} roome is the more interesting one in which the gameplay
+the \ident{Menu}, while a \ident{Battlefield} room is the more interesting one in which the gameplay
 actually takes place.
 
 \begin{code}
   data Room
     = MainMenu Menu
     | PauseMenu Menu Room
-    | Battle
-      { players      :: [Player]
-      , board        :: Board
-      , turnCount    :: Int
-      }
+    | Battlefield Battle
+
+  data Battle = Battle
+    { players      :: [Player]
+    , board        :: Board
+    , turnCount    :: Int
+    }
 \end{code}
 
 A \ident{Menu} can be thought of, generally, as a set of named \ident{options}, each of which
@@ -104,7 +102,7 @@ perform a different \ident{Action}. The currently selected option is determined 
 
 \begin{code}
   data Menu = Menu
-    { options   :: [(String, Action)]
+    { options   :: [(Text, Action)]
     , selection :: Int
     , submenu   :: Maybe Menu
     }
@@ -237,12 +235,30 @@ elsewhere.
     -- TODO
 \end{code}
 
-Finally, a \ident{GameRef} simply provides a view into the \ident{Game} model allowing a particular
+A \ident{GameRef} simply provides a view into the \ident{Game} model allowing a particular
 element to be quickly retrieved. This provides a sort of weak reference mechanism specific to this
 model, which may or may not actually be useful when it comes time to implement this stuff.
 
+The other helper types, \ident{Point}, \ident{Direction} and \ident{Rectangle} represent what you
+would expect.
+
 \begin{code}
   newtype GameRef a = GameRef (Game -> a)
+
+  data Point a     = Point     a a
+    deriving (Show, Generic, Eq)
+  data Direction a = Direction a a
+    deriving (Show, Generic, Eq)
+  data Rectangle a = Rectangle a a a a
+    deriving (Show, Generic, Eq)
+
+  class ToSDL a b where
+    toSDL :: a -> b
+
+  instance ToSDL (Point a) (SDL.Point SDL.V2 a) where
+    toSDL (Point x y) = SDL.P (SDL.V2 x y)
+  instance ToSDL (Rectangle a) (SDL.Rectangle a) where
+    toSDL (Rectangle x y w h) = SDL.Rectangle (SDL.P (SDL.V2 x y)) (SDL.V2 w h)
 \end{code}
 
 \end{document}

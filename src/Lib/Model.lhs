@@ -10,12 +10,14 @@ methods for dealing with the model. The actual model itself is described in the
 \ident{Lib.Module.Game} module.
 
 \begin{code}
+{-# LANGUAGE OverloadedStrings #-}
 module Lib.Model where
+  import Data.Text
   import Lib.Model.Game
 \end{code}
 
-The \ident{newGame} is the initial state of the game, as it is when started up fresh. From here,
-through use of \ident{Action}s the game unfolds.
+The \ident{newGame} is the initial state of the game, as it is when started up fresh. Through
+actions, this state is modified and the game is played.
 
 \begin{code}
   newGame :: Game
@@ -25,10 +27,19 @@ through use of \ident{Action}s the game unfolds.
   defaultSettings = Settings True True True
 
   mainMenu :: Room
-  mainMenu = MainMenu $ menu []
+  mainMenu = MainMenu $
+    menu
+      [ ("New Game", noop)
+      , ("Continue", noop)
+      , ("Multiplayer", noop)
+      , ("Settings", noop)
+      , ("Quit", noop) ]
 
-  menu :: [(String, Action)] -> Menu
+  menu :: [(Text, Action)] -> Menu
   menu options = Menu options 0 Nothing
+
+  noop :: Action
+  noop = Action return
 \end{code}
 
 \end{document}

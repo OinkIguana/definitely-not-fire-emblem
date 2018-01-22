@@ -17,9 +17,10 @@ user input are created. By the time this function returns, the game window is cl
 module Lib (play) where
   import Control.Concurrent
   import Control.Monad
-  import Lib.Model
-  import SDL
   import Foreign.C.Types
+  import SDL
+  import Lib.Model
+  import Lib.Render
 
   play :: IO ()
   play = do
@@ -68,15 +69,7 @@ threads continue to process inputs and update the model. Since this game does no
 perfect interactions, we can sacrifice consistency for speed, to some extent.
 
 \begin{code}
-    renderThread <- forkIO $ do
-      let
-        renderLoop = do
-          clear renderer
-          -- TODO: render the game
-          present renderer
-          renderLoop
-      renderLoop
-      return ()
+    renderThread <- forkIO $ renderLoop model renderer
 \end{code}
 
 The next thread is the audio thread. The audio thread awaits signals on the channel shared with the
