@@ -38,7 +38,7 @@ In that sense, an \ident{Action} can be simply thought of as a mapping from one 
     , room     :: Room
     }
 
-  newtype Action = Action (Game -> IO Game)
+  type Action = Game -> IO Game
 \end{code}
 
 The \ident{Settings} are pretty self explanatory. They can be set and should affect the player's

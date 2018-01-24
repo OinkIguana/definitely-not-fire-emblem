@@ -89,16 +89,7 @@ Then comes the interaction loop thread. This thread is the one that processes al
 and performs the updates to the model.
 
 \begin{code}
-    -- Interaction thread
-    let
-      eventLoop :: IO ()
-      eventLoop = do
-        Event _ event <- waitEvent
-        let shouldQuit = case event of
-              KeyboardEvent (KeyboardEventData _ Pressed _ (Keysym ScancodeEscape _ _)) -> True
-              _ -> False
-        unless shouldQuit eventLoop
-    eventLoop
+    eventLoop model
 \end{code}
 
 Once the event loop decides it is time to end the other threads are killed and then we shut down
