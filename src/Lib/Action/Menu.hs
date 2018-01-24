@@ -1,26 +1,31 @@
 {-# LANGUAGE NamedFieldPuns #-}
-{-# LANGUAGE RecordWildcards #-}
+{-# LANGUAGE RecordWildCards #-}
 module Lib.Action.Menu
   ( nextOption
   , previousOption
   , selectOption
   ) where
   import Lib.Model.Game
+  import Data.Maybe
 
-  nextOption :: Action
+  nextOption :: Menu -> Menu
   nextOption = nextOption_ . unnestMenu
-    where nextOption Menu { options, selected, .. } =
-      Menu { selected = (selected + 1) % length options, .. }
+    where
+      nextOption_ Menu { options, selection, .. } =
+        Menu { selection = (selection + 1) `mod` length options, .. }
 
-  previousOption :: Action
-  previousOption = nextOption . unnestMenu
-    where previousOption_ Menu { options, selected, .. } =
-      let len = length options in Menu { selected = (selected - 1 + len) % len, .. }
+  previousOption :: Menu -> Menu
+  previousOption = previousOption_ . unnestMenu
+    where
+      previousOption_ Menu { options, selection, .. } =
+        let len = length options in
+          Menu { selection = (selection - 1 + len) `mod` len, .. }
 
   selectOption :: Menu -> Action
   selectOption = selectOption_ . unnestMenu
-    where selectOption_ Menu { options, selected, .. } =
-      snd $ options !! selected
+    where
+      selectOption_ Menu { options, selection, .. } =
+        snd $ options !! selection
 
   unnestMenu :: Menu -> Menu
-  unnestMenu menu = fromMaybe menu $ menu >>= submenu
+  unnestMenu menu = fromMaybe menu $ submenu menu

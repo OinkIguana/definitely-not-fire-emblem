@@ -36,6 +36,7 @@ In that sense, an \ident{Action} can be simply thought of as a mapping from one 
     { settings :: Settings
     , graphics :: [Sprite]
     , room     :: Room
+    , quit     :: Bool
     }
 
   type Action = Game -> IO Game

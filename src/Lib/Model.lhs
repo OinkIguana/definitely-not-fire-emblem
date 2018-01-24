@@ -14,6 +14,7 @@ methods for dealing with the model. The actual model itself is described in the
 module Lib.Model where
   import Data.Text
   import Lib.Model.Game
+  import Lib.Action.Game as Game
 \end{code}
 
 The \ident{newGame} is the initial state of the game, as it is when started up fresh. Through
@@ -21,7 +22,7 @@ actions, this state is modified and the game is played.
 
 \begin{code}
   newGame :: Game
-  newGame = Game defaultSettings [] mainMenu
+  newGame = Game defaultSettings [] mainMenu False
 
   defaultSettings :: Settings
   defaultSettings = Settings True True True
@@ -33,13 +34,13 @@ actions, this state is modified and the game is played.
       , ("Continue", noop)
       , ("Multiplayer", noop)
       , ("Settings", noop)
-      , ("Quit", noop) ]
+      , ("Quit", Game.quit) ]
 
   menu :: [(Text, Action)] -> Menu
   menu options = Menu options 0 Nothing
 
   noop :: Action
-  noop = Action return
+  noop = return
 \end{code}
 
 \end{document}

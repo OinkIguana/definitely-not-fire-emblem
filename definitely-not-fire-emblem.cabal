@@ -1,0 +1,99 @@
+-- This file has been generated from package.yaml by hpack version 0.20.0.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: e63b399126d3dc759e078e42bd28fd64ddf36bf1bdb5f087e13e2f49fdda2e68
+
+name:           definitely-not-fire-emblem
+version:        0.1.0.0
+description:    Please see the README on Github at <https://github.com/oinkiguana/definitely-not-fire-emblem#readme>
+homepage:       https://github.com/oinkiguana/definitely-not-fire-emblem#readme
+bug-reports:    https://github.com/oinkiguana/definitely-not-fire-emblem/issues
+author:         Cameron Eldridge
+maintainer:     cameldridge+git@gmail.com
+copyright:      2018 Cameron Eldridge
+license:        BSD3
+license-file:   LICENSE
+build-type:     Simple
+cabal-version:  >= 1.10
+
+extra-source-files:
+    ChangeLog.md
+    literate.sty
+    README.md
+
+source-repository head
+  type: git
+  location: https://github.com/oinkiguana/definitely-not-fire-emblem
+
+library
+  hs-source-dirs:
+      src
+  build-depends:
+      base >=4.7 && <5
+    , colour
+    , containers
+    , mtl
+    , sdl2
+    , sdl2-image
+    , sdl2-ttf
+    , symbol
+    , text
+  exposed-modules:
+      Lib
+      Lib.Action
+      Lib.Action.Game
+      Lib.Action.MainMenu
+      Lib.Action.Menu
+      Lib.Model
+      Lib.Model.Game
+      Lib.RC
+      Lib.Render
+      Lib.Resources.Fonts
+      Lib.View
+      Lib.View.MainMenu
+      Lib.View.Menu
+  other-modules:
+      Paths_definitely_not_fire_emblem
+  default-language: Haskell2010
+
+executable dnfe
+  main-is: Main.hs
+  hs-source-dirs:
+      app
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+    , colour
+    , containers
+    , definitely-not-fire-emblem
+    , mtl
+    , sdl2
+    , sdl2-image
+    , sdl2-ttf
+    , symbol
+    , text
+  other-modules:
+      Paths_definitely_not_fire_emblem
+  default-language: Haskell2010
+
+test-suite dnfe-test
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  hs-source-dirs:
+      test
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+    , colour
+    , containers
+    , definitely-not-fire-emblem
+    , mtl
+    , sdl2
+    , sdl2-image
+    , sdl2-ttf
+    , symbol
+    , text
+  other-modules:
+      Paths_definitely_not_fire_emblem
+  default-language: Haskell2010

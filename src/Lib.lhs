@@ -21,6 +21,7 @@ module Lib (play) where
   import SDL
   import Lib.Model
   import Lib.Render
+  import Lib.Action
 
   play :: IO ()
   play = do

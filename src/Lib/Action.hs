@@ -1,19 +1,22 @@
-module Action (eventLoop) where
+module Lib.Action (eventLoop) where
   import Control.Concurrent
-  import SDL
+  import Control.Monad
+  import SDL.Event
+  import SDL.Input.Keyboard
   import Lib.Model.Game
   import Lib.Action.MainMenu
 
   eventLoop :: MVar Game -> IO ()
   eventLoop model = do
     event <- waitEvent
-    takeMVar model >>= processEvent event >>= putMVar model >> eventLoop model
+    game <- takeMVar model >>= processEvent event
+    putMVar model game
+    unless (quit game) $ eventLoop model
 
-  processEvent :: Event -> Game -> Either () (IO Game)
+  processEvent :: Event -> Game -> IO Game
   processEvent (Event timestamp payload) game =
     case payload of
-      KeyboardEvent (KeyboardEventData _ Pressed _ (Keysym ScancodeEscape _ _)) -> Left ()
-      KeyboardEvent (KeyboardEventData _ Pressed _ (Keysym ScancodeDown _ _)) -> Right $ nextOption game
-      KeyboardEvent (KeyboardEventData _ Pressed _ (Keysym ScancodeUp _ _)) -> Right $ previousOption game
-      KeyboardEvent (KeyboardEventData _ Pressed _ (Keysym ScancodeEnter _ _)) -> Right $ selectOption game
-      _ -> Right $ return game
+      KeyboardEvent (KeyboardEventData _ Pressed _ (Keysym ScancodeDown _ _)) -> nextOption game
+      KeyboardEvent (KeyboardEventData _ Pressed _ (Keysym ScancodeUp _ _)) -> previousOption game
+      KeyboardEvent (KeyboardEventData _ Pressed _ (Keysym ScancodeReturn _ _)) -> selectOption game
+      _ -> return game

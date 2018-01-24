@@ -4,4 +4,4 @@ module Lib.View (view) where
   import Lib.RC
 
   view :: Game -> StateRC ()
-  view (Game _ _ (MainMenu menu)) = MainMenu.view menu
+  view Game { room = MainMenu menu } = MainMenu.view menu

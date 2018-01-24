@@ -1,6 +1,7 @@
 {-# LANGUAGE NamedFieldPuns #-}
 module Lib.View.Menu (renderMenuQuick) where
   import Control.Monad
+  import Data.Text (Text)
   import qualified SDL
   import qualified SDL.Font as Font
   import Foreign.C.Types
@@ -8,15 +9,14 @@ module Lib.View.Menu (renderMenuQuick) where
   import Lib.Model.Game
   import Lib.RC
 
-
   renderMenuQuick :: Menu -> StateRC SDL.Texture
-  renderMenuQuick Menu { options, selected } = do
+  renderMenuQuick Menu { options, selection } = do
     let len = length options
     font <- getFont fontDefault
     sep <- Font.lineSkip font
     renderer <- getRenderer
     width <- maximum . map fst <$> mapM (Font.size font . fst) options
-    surfaces <- renderOptions font selected $ map fst options
+    surfaces <- sequence $ renderOptions font selection $ map fst options
     combined <- SDL.createRGBSurface (SDL.V2 (fromIntegral width) (fromIntegral $ sep * len)) SDL.RGBA8888
     let
       alignOption :: Int -> SDL.Surface -> StateRC (Maybe (SDL.Rectangle CInt))
@@ -24,17 +24,18 @@ module Lib.View.Menu (renderMenuQuick) where
         SDL.surfaceBlit surface Nothing combined $
           Just $ toSDL $ Point (0 :: CInt) (fromIntegral $ i * sep)
     mapM_ (uncurry alignOption) (zip [0..] surfaces)
+    mapM_ SDL.freeSurface surfaces
     SDL.createTextureFromSurface renderer combined
 
-  renderOptions :: SDL.Font -> Int -> [Text] -> StateRC [Surface]
-  renderOptions font 0 (option : options) = renderSelectedOption font option : renderOptions font -1 options
+  renderOptions :: Font.Font -> Int -> [Text] -> [StateRC SDL.Surface]
+  renderOptions font 0 (option : options) = renderSelectedOption font option : renderOptions font (-1) options
   renderOptions font n (option : options) = renderOption font option : renderOptions font (n - 1) options
   renderOptions _ _ [] = []
 
-  renderOption :: SDL.Font -> Text -> StateRC SDL.Surface
+  renderOption :: Font.Font -> Text -> StateRC SDL.Surface
   renderOption font = Font.solid font white
 
-  renderSelectedOption :: SDL.Font -> Text -> StateRC SDL.Surface
+  renderSelectedOption :: Font.Font -> Text -> StateRC SDL.Surface
   renderSelectedOption font = Font.solid font red
 
   white = SDL.V4 255 255 255 255
