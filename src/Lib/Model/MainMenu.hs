@@ -3,6 +3,7 @@ module Lib.Model.MainMenu (new) where
   import Data.Text
   import Lib.Model.Game
   import qualified Lib.Model.Menu as Menu
+  import qualified Lib.Model.SettingsMenu as SettingsMenu
   import qualified Lib.Action.MainMenu as MainMenu
   import qualified Lib.Action.Game as Game
 

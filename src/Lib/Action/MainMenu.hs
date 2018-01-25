@@ -21,7 +21,7 @@ module Lib.Action.MainMenu
     maybe return Menu.selectOption (takeMainMenu game) game
 
   addSubmenu :: Menu -> Action
-  addSubmenu = withMainMenu Menu.addSubmenu
+  addSubmenu = withMainMenu . Menu.addSubmenu
 
   back :: Action
   back = withMainMenu Menu.back

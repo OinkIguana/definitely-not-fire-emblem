@@ -4,7 +4,13 @@ module Lib.Model where
   import Lib.Model.MainMenu as MainMenu
 
   newGame :: Game
-  newGame = Game defaultSettings [] MainMenu.new False
+  newGame = Game defaultSettings defaultEnvironment defaultSaveData MainMenu.new False
 
   defaultSettings :: Settings
   defaultSettings = Settings True True True
+
+  defaultEnvironment :: Environment
+  defaultEnvironment = Environment (Point 0 0)
+
+  defaultSaveData :: SaveData
+  defaultSaveData = SaveData 0 []

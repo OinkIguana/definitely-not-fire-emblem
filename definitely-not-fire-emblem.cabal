@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 477fc1a314942cf6552e47f1c6783481dc966c0acdaca0c5dc940b47af4c4810
+-- hash: 77c49e49f9a5acab55e20b2f4b902d9f4c6cb2f47a8cfeb00cf86e64209cf0f2
 
 name:           definitely-not-fire-emblem
 version:        0.1.0.0
@@ -45,10 +45,12 @@ library
       Lib.Action.Game
       Lib.Action.MainMenu
       Lib.Action.Menu
+      Lib.Action.SettingsMenu
       Lib.Model
       Lib.Model.Game
       Lib.Model.MainMenu
       Lib.Model.Menu
+      Lib.Model.SettingsMenu
       Lib.RC
       Lib.Render
       Lib.Resources.Fonts

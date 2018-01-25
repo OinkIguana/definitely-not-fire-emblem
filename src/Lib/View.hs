@@ -7,4 +7,4 @@ module Lib.View (view) where
   view game =
     case game of
       Game { room = MainMenu menu } -> MainMenu.view game menu
-      _ -> return
+      _ -> return ()

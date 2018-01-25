@@ -67,7 +67,7 @@ sufficient to save and restore most of the player's game state.
   data SaveData = SaveData
     { stage :: Int
     , units :: [Unit]
-    } deriving (Show, Read)
+    }
 \end{code}
 
 At a very high level, a game consists of just a few \ident{Room}s. Each room has an almost

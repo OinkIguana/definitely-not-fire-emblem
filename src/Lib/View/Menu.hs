@@ -11,11 +11,12 @@ module Lib.View.Menu (renderMenuQuick) where
 
   renderMenuQuick :: Game -> Menu -> StateRC SDL.Texture
   renderMenuQuick game Menu { options, selection } = do
-    let len = length options
+    let
+      len = length options
+      optionTexts = map (($ game) . fst) options
     font <- getFont fontDefault
     sep <- Font.lineSkip font
     renderer <- getRenderer
-    optionTexts <- map (($) game . fst) options
     width <- maximum . map fst <$> mapM (Font.size font) optionTexts
     surfaces <- sequence $ renderOptions font selection optionTexts
     combined <- SDL.createRGBSurface (SDL.V2 (fromIntegral width) (fromIntegral $ sep * len)) SDL.RGBA8888

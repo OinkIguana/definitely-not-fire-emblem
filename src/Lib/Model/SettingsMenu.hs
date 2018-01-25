@@ -16,12 +16,12 @@ module Lib.Model.SettingsMenu (new) where
 
   autoEndLabel :: Game -> Text
   autoEndLabel Game { settings = Settings { autoEnd } } =
-    "Auto end: " ++ if autoEnd then "Enabled" else "Disabled"
+    "Auto end: " `append` if autoEnd then "Enabled" else "Disabled"
 
   combatAnimationsLabel :: Game -> Text
   combatAnimationsLabel Game { settings = Settings { combatAnimations } } =
-    "Combat animations: " ++ if combatAnimations then "Enabled" else "Disabled"
+    "Combat animations: " `append` if combatAnimations then "Enabled" else "Disabled"
 
   movementAnimationsLabel :: Game -> Text
   movementAnimationsLabel Game { settings = Settings { movementAnimations } } =
-    "Movement animations: " ++ if movementAnimations then "Enabled" else "Disabled"
+    "Movement animations: " `append` if movementAnimations then "Enabled" else "Disabled"
