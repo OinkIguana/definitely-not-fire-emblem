@@ -33,10 +33,11 @@ In that sense, an \ident{Action} can be simply thought of as a mapping from one 
 
 \begin{code}
   data Game = Game
-    { settings :: Settings
-    , graphics :: [Sprite]
-    , room     :: Room
-    , quit     :: Bool
+    { settings    :: Settings
+    , environment :: Environment
+    , saveData    :: SaveData
+    , room        :: Room
+    , quit        :: Bool
     }
 
   type Action = Game -> IO Game
@@ -45,36 +46,32 @@ In that sense, an \ident{Action} can be simply thought of as a mapping from one 
 The \ident{Settings} are pretty self explanatory. They can be set and should affect the player's
 experience accordingly.
 
+The \ident{Environment} is similar in that it simply holds a bunch of information about the game,
+but these are not set by the user and are instead calculated by the game much as the rest of the
+model is.
+
+The \ident{SaveData} is again the same idea, but is intended for information about a particular
+playthrough of the story mode, holding information like what point in the story has been reached,
+and what units are available and their stats, among other things. Writing this to a file should be
+sufficient to save and restore most of the player's game state.
+
 \begin{code}
   data Settings = Settings
-    -- TODO
-    { combatAnimations   :: Bool
-    , movementAnimations :: Bool
-    , autoEnd            :: Bool
+    -- TODO: what other options are needed?
+    { combatAnimations   :: Bool -- whether combat should be animated
+    , movementAnimations :: Bool -- whether movement should be animated
+    , autoEnd            :: Bool -- whether the turn should end automatically when no actions remain
     }
+
+  data Environment = Environment
+    { renderOffset :: Point Int  -- suggests that everything in the game should be rendered shifted by some distance
+    }
+
+  data SaveData = SaveData
+    { stage :: Int
+    , units :: [Unit]
+    } deriving (Show, Read)
 \end{code}
-
-A \ident{Sprite} exists solely for rendering purposes. Though some elements of the game can be
-rendered based simply on the state of the \ident{Room}, the more complex items require the use of
-a \ident{Sprite} -- things such as animations and special effects.
-
-\begin{code}
-  newtype Sprite = Sprite SpriteEffect
-
-  data SpriteBase
-    = Static SDL.Texture (Rectangle Int)
-    | Animation SDL.Texture [Rectangle Int] Int
-    | AnimationCycle SDL.Texture [Rectangle Int] Int
-
-  data SpriteEffect
-    = Base SpriteBase
-    | Position (Point Int) SpriteEffect
-    | Movement (Point Int) (Point Int) SpriteEffect
-    | ColourBlend (Colour Double) SpriteEffect -- TODO: does this require a blend mode
-    | ParticleSystem (Point Int) [Point Int] SpriteEffect
-    | Sequence [Sprite]
-\end{code}
-
 
 At a very high level, a game consists of just a few \ident{Room}s. Each room has an almost
 entirely distinct set of relevant updaters to manage its own internal state, so they are broken up
@@ -128,12 +125,11 @@ a set of \ident{Unit}s available to them.
     = Human
       { name   :: Text
       , colour :: Colour Double
-      , units  :: [Unit]
       }
     | CPU
       { strategy :: Strategy
+      , name     :: Text
       , colour   :: Colour Double
-      , units    :: [Unit]
       }
 
   data Strategy = Strategy -- TODO
@@ -184,7 +180,7 @@ unit's state to the player.
     -- TODO
 
   data Stats = Stats
-    -- TODO: which of these are relevant, and what else needs to be added?
+    -- TODO: which of these are relevant, and what else needs to be added
     { mhp :: Int
     , chp :: Int
     , atk :: Int
@@ -221,24 +217,53 @@ elsewhere.
 
   data Tile = Tile
     { terrain :: Terrain
-    , unit    :: Maybe (GameRef Unit)
+    , unit    :: Maybe Unit
     }
 
   data Terrain
     = Plain
     | Mountain
+    | Peak
+    | Stone
+    | Lava
+    | Cliff
     | Forest
-    | Swamp
-    | River
-    | Water
     | Hill
     | Road
-    -- TODO
+    | Floor
+    | Wall
+    | ShallowWater
+    | DeepWater
+    | River
+    | Swamp
+    | Bridge
+\end{code}
+
+A \ident{Sprite} exists solely for rendering purposes. Though some elements of the game can be
+rendered based simply on the state of the \ident{Room}, the more complex items require the use of
+a \ident{Sprite} -- things such as animations and special effects.
+
+\begin{code}
+  newtype Sprite = Sprite SpriteEffect
+
+  data SpriteBase
+    = Static SDL.Texture (Rectangle Int)
+    | Animation SDL.Texture [Rectangle Int] Int
+    | AnimationCycle SDL.Texture [Rectangle Int] Int
+
+  data SpriteEffect
+    = Base SpriteBase
+    | Position (Point Int) SpriteEffect
+    | Movement (Point Int) (Point Int) SpriteEffect
+    | ColourBlend (Colour Double) SpriteEffect -- TODO: does this require a blend mode
+    | ParticleSystem (Point Int) [Point Int] SpriteEffect
+    | Sequence [Sprite]
 \end{code}
 
 A \ident{GameRef} simply provides a view into the \ident{Game} model allowing a particular
 element to be quickly retrieved. This provides a sort of weak reference mechanism specific to this
-model, which may or may not actually be useful when it comes time to implement this stuff.
+model, which may or may not actually be useful when it comes time to implement this stuff. If
+needed, this can be updated to be a Lens or something.
 
 The other helper types, \ident{Point}, \ident{Direction} and \ident{Rectangle} represent what you
 would expect.
