@@ -1,9 +1,10 @@
-{-# LANGUAGE NamedFieldPuns #-}
-{-# LANGUAGE RecordWildCards #-}
+{-# LANGUAGE NamedFieldPuns, RecordWildCards #-}
 module Lib.Action.Menu
   ( nextOption
   , previousOption
   , selectOption
+  , submenu
+  , back
   ) where
   import Lib.Model.Game
   import Data.Maybe
@@ -26,6 +27,18 @@ module Lib.Action.Menu
     where
       selectOption_ Menu { options, selection, .. } =
         snd $ options !! selection
+
+  addSubmenu :: Menu -> Menu -> Menu
+  addSubmenu toAdd Menu { submenu = Nothing, .. } = Menu { submenu = toAdd, .. }
+  addSubmenu toAdd menu = menu { submenu = addSubmenu toAdd $ submenu menu }
+
+  back :: Menu -> Menu
+  back menu =
+    case submenu menu of
+      Nothing -> menu
+      Just menu' -> case submenu menu' of
+        Nothing -> menu'
+        Just menu'' = back menu'
 
   unnestMenu :: Menu -> Menu
   unnestMenu menu = fromMaybe menu $ submenu menu

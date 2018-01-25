@@ -14,10 +14,7 @@ model have conflicting names, but I feel they are most easily manageable when la
 file as it is done here.
 
 \begin{code}
-{-# LANGUAGE DuplicateRecordFields #-}
-{-# LANGUAGE DeriveGeneric #-}
-{-# LANGUAGE MultiParamTypeClasses #-}
-{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE DuplicateRecordFields, DeriveGeneric, MultiParamTypeClasses, FlexibleInstances #-}
 
 module Lib.Model.Game where
   import GHC.Generics
@@ -100,7 +97,7 @@ perform a different \ident{Action}. The currently selected option is determined 
 
 \begin{code}
   data Menu = Menu
-    { options   :: [(Text, Action)]
+    { options   :: [(Game -> Text, Action)]
     , selection :: Int
     , submenu   :: Maybe Menu
     }
