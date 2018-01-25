@@ -1,9 +1,12 @@
 module Lib.Action (eventLoop) where
+  import Data.Int
   import Control.Concurrent
   import Control.Monad
+  import SDL (V2(..), Point)
   import SDL.Event
   import SDL.Input.Keyboard
-  import Lib.Model.Game
+  import SDL.Input.Mouse
+  import Lib.Model.Game hiding (Point)
   import Lib.Action.MainMenu
 
   eventLoop :: MVar Game -> IO ()

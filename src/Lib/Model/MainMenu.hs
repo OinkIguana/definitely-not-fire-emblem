@@ -5,8 +5,8 @@ module Lib.Model.MainMenu (new) where
   import qualified Lib.Model.Menu as Menu
   import qualified Lib.Action.Game as Game
 
-  new :: MainMenu
-  new = Menu.new
+  new :: Room
+  new = MainMenu $ Menu.new
       [ ("New Game", return)
       , ("Continue", return)
       , ("Multiplayer", return)
