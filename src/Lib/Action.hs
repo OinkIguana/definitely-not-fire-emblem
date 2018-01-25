@@ -14,9 +14,17 @@ module Lib.Action (eventLoop) where
     unless (quit game) $ eventLoop model
 
   processEvent :: Event -> Game -> IO Game
-  processEvent (Event timestamp payload) game =
+  processEvent (Event timestamp payload) =
     case payload of
-      KeyboardEvent (KeyboardEventData _ Pressed _ (Keysym ScancodeDown _ _)) -> nextOption game
-      KeyboardEvent (KeyboardEventData _ Pressed _ (Keysym ScancodeUp _ _)) -> previousOption game
-      KeyboardEvent (KeyboardEventData _ Pressed _ (Keysym ScancodeReturn _ _)) -> selectOption game
-      _ -> return game
+      KeyboardEvent keyboardData -> keyboardEvent keyboardData
+      _ -> return
+
+  keyboardEvent :: KeyboardEventData -> Game -> IO Game
+  keyboardEvent (KeyboardEventData _ Pressed _ (Keysym scancode _ _)) = keyPressed scancode
+  keyboardEvent _ = return
+
+  keyPressed :: Scancode -> Game -> IO Game
+  keyPressed ScancodeDown = nextOption
+  keyPressed ScancodeUp = previousOption
+  keyPressed ScancodeReturn = selectOption
+  keyPressed _ = return
