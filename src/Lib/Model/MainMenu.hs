@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Lib.Model.MainMenu (new) where
   import Data.Text
-  import Lib.Model.Game
+  import Lib.Model
   import qualified Lib.Model.Menu as Menu
   import qualified Lib.Model.SettingsMenu as SettingsMenu
   import qualified Lib.Action.MainMenu as MainMenu
@@ -9,7 +9,7 @@ module Lib.Model.MainMenu (new) where
 
   new :: Room
   new = MainMenu $ Menu.new
-      [ (const "New Game", return)
+      [ (const "New Game", MainMenu.newGame)
       , (const "Continue", return)
       , (const "Multiplayer", return)
       , (const "Settings", MainMenu.addSubmenu SettingsMenu.new)

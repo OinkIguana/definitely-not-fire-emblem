@@ -1,6 +1,6 @@
 {-# LANGUAGE RecordWildCards, NamedFieldPuns #-}
 module Lib.Action.SettingsMenu where
-  import Lib.Model.Game
+  import Lib.Model
 
   toggleAutoEnd :: Action
   toggleAutoEnd Game { settings, .. } = return Game { settings = settings { autoEnd = not $ autoEnd settings } , .. }

@@ -6,7 +6,7 @@ module Lib.Action.Menu
   , addSubmenu
   , back
   ) where
-  import Lib.Model.Game
+  import Lib.Model
   import Data.Maybe
 
   nextOption :: Menu -> Menu

@@ -1,5 +1,9 @@
-module Lib.Action.Game (quit) where
-  import qualified Lib.Model.Game as Game
+module Lib.Action.Game (quit, navigate) where
+  import qualified Lib.Model as Model
 
-  quit :: Game.Action
-  quit game = return game { Game.quit = True }
+  quit :: Model.Action
+  quit game = return game { Model.quit = True }
+
+  navigate :: Model.Room -> Model.Action
+  navigate newRoom game =
+    return game { Model.room = newRoom }

@@ -6,7 +6,7 @@ module Lib.View.Menu (renderMenuQuick) where
   import qualified SDL.Font as Font
   import Foreign.C.Types
   import Lib.Resources.Fonts
-  import Lib.Model.Game
+  import Lib.Model
   import Lib.RC
 
   renderMenuQuick :: Game -> Menu -> StateRC SDL.Texture

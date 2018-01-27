@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings, NamedFieldPuns #-}
 module Lib.Model.SettingsMenu (new) where
   import Data.Text
-  import Lib.Model.Game
+  import Lib.Model
   import qualified Lib.Model.Menu as Menu
   import qualified Lib.Action.SettingsMenu as SettingsMenu
   import qualified Lib.Action.MainMenu as MainMenu

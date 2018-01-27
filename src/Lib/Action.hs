@@ -6,7 +6,7 @@ module Lib.Action (eventLoop) where
   import SDL.Event
   import SDL.Input.Keyboard
   import SDL.Input.Mouse
-  import Lib.Model.Game hiding (Point)
+  import Lib.Model hiding (Point)
   import Lib.Action.MainMenu
 
   eventLoop :: MVar Game -> IO ()

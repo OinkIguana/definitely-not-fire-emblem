@@ -4,7 +4,7 @@ module Lib.Render (renderLoop) where
   import SDL (clear, present, Renderer)
   import qualified SDL.Image
   import qualified SDL.Font
-  import Lib.Model.Game
+  import Lib.Model
   import Lib.View
   import Lib.RC
 

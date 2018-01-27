@@ -2,7 +2,7 @@
 module Lib.View.MainMenu (view) where
   import SDL (copy, queryTexture, TextureInfo(..), destroyTexture)
   import Lib.RC
-  import Lib.Model.Game
+  import Lib.Model
   import Lib.View.Menu
 
   view :: Game -> Menu -> StateRC ()

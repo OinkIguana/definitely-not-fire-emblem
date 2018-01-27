@@ -1,9 +1,9 @@
 \documentclass{article}
-\usepackage{../../../literate}
+\usepackage{../../literate}
 
 \begin{document}
 
-\module[Lib.Model]{Game}
+\module[Lib]{Model}
 
 To begin, note that we are using \ident{Text} in place of \ident{String} for the obvious reasons.
 Additionally, to support proper blending of colours into the game sprites -- to differentiate the
@@ -16,7 +16,7 @@ file as it is done here.
 \begin{code}
 {-# LANGUAGE DuplicateRecordFields, DeriveGeneric, MultiParamTypeClasses, FlexibleInstances #-}
 
-module Lib.Model.Game where
+module Lib.Model where
   import GHC.Generics
   import qualified SDL
   import Data.Text (Text)
@@ -83,6 +83,7 @@ actually takes place.
     = MainMenu Menu
     | PauseMenu Menu Room
     | Battlefield Battle
+    | Cutscene [Sprite]
 
   data Battle = Battle
     { players      :: [Player]

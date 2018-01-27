@@ -19,7 +19,7 @@ module Lib (play) where
   import Control.Monad
   import Foreign.C.Types
   import SDL
-  import Lib.Model
+  import qualified Lib.Model.Game as Game
   import Lib.Render
   import Lib.Action
 
@@ -57,7 +57,7 @@ need for fully optimizable model updates is relatively low, so simplicity of the
 the way to go. % TODO: if this gets bad, reconsider!
 
 \begin{code}
-    model <- newMVar newGame
+    model <- newMVar Game.new
     audioChannel <- newChan
 \end{code}
 

@@ -5,9 +5,11 @@ module Lib.Action.MainMenu
   , selectOption
   , addSubmenu
   , back
+  , newGame
   ) where
   import qualified Lib.Action.Menu as Menu
-  import Lib.Model.Game
+  import qualified Lib.Model.SaveData as SaveData
+  import Lib.Model
   import Data.Maybe
 
   nextOption :: Action
@@ -33,3 +35,8 @@ module Lib.Action.MainMenu
   takeMainMenu :: Game -> Maybe Menu
   takeMainMenu Game { room = MainMenu menu } = Just menu
   takeMainMenu _ = Nothing
+
+  newGame :: Action
+  newGame game = return game
+    { room = Cutscene []
+    , saveData = SaveData.new }
