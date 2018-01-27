@@ -39,5 +39,5 @@ module Lib.Action.MainMenu
 
   newGame :: Action
   newGame game = return game
-    { room = Cutscene [] $ Battlefield $ Battle [] emptyPlains 0
+    { room = Battlefield $ Battle [] emptyPlains 0
     , saveData = SaveData.new }

@@ -27,6 +27,9 @@ module Data.Grid where
       height = length lists
       cells = take (width * height) $ concat lists
 
+  positionIn :: Grid a -> Int -> (Int, Int)
+  positionIn Grid { width } index = (index `mod` width, index `div` width)
+
   indexOf :: Int -> Int -> Grid a -> Int
   indexOf x y Grid { width } = y * width + x
 

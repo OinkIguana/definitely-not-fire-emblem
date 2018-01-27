@@ -43,6 +43,7 @@ standard SDL behaviour.
     renderer <- createRenderer window (-1)
       ( defaultRenderer
           { rendererType = AcceleratedVSyncRenderer
+          , rendererTargetTexture = True
           }
       )
 \end{code}

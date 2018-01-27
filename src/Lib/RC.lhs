@@ -23,6 +23,7 @@ textures, surfaces, and fonts to be created or loaded and stored for later use b
     , getFont
     , freeFont
     , getRenderer
+    , liftIO
     ) where
     import Control.Monad.State
     import qualified Data.Map as Map
@@ -79,9 +80,9 @@ only ever will) be loaded when it is required with no extra thought from the pro
 
 \begin{code}
     newtype Key a = Key (Key_ a)
-    data Key_ a = Key_ Symbol (IO a)
+    data Key_ a = Key_ Symbol (StateRC a)
 
-    keyFor :: String -> IO a -> Key a
+    keyFor :: String -> StateRC a -> Key a
     keyFor str accessor = Key $ Key_ (intern str) accessor
 \end{code}
 
@@ -102,7 +103,7 @@ The \ident{getRenderer} function simply produces the associated \ident{Renderer}
     getTexture (Key (Key_ symbol accessor)) = do
       tex <- getsRC (flip (!?) symbol . textures)
       case tex of
-        Nothing   -> liftIO accessor >>= addTexture symbol
+        Nothing   -> accessor >>= addTexture symbol
         Just tex  -> return tex
 
     addSurface :: Symbol -> Surface -> StateRC Surface
@@ -115,7 +116,7 @@ The \ident{getRenderer} function simply produces the associated \ident{Renderer}
     getSurface (Key (Key_ symbol accessor)) = do
       surf <- getsRC (flip (!?) symbol . surfaces)
       case surf of
-        Nothing   -> liftIO accessor >>= addSurface symbol
+        Nothing   -> accessor >>= addSurface symbol
         Just surf -> return surf
 
     addFont :: Symbol -> Font -> StateRC Font
@@ -128,7 +129,7 @@ The \ident{getRenderer} function simply produces the associated \ident{Renderer}
     getFont (Key (Key_ symbol accessor)) = do
       font <- getsRC (flip (!?) symbol . fonts)
       case font of
-        Nothing   -> liftIO accessor >>= addFont symbol
+        Nothing   -> accessor >>= addFont symbol
         Just font -> return font
 
     getRenderer :: StateRC Renderer

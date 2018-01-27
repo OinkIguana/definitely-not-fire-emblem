@@ -270,24 +270,29 @@ element to be quickly retrieved. This provides a sort of weak reference mechanis
 model, which may or may not actually be useful when it comes time to implement this stuff. If
 needed, this can be updated to be a Lens or something.
 
-The other helper types, \ident{Point}, \ident{Direction} and \ident{Rectangle} represent what you
-would expect.
+The other helper types, \ident{Point}, \ident{Dimension} and \ident{Rectangle} represent what you
+would expect. These should be moved to another file someday when I am in the mood.
 
 \begin{code}
   newtype GameRef a = GameRef (Game -> a)
 
   data Point a     = Point     a a
     deriving (Show, Generic, Eq)
-  data Direction a = Direction a a
+  data Dimension a = Dimension a a
     deriving (Show, Generic, Eq)
   data Rectangle a = Rectangle a a a a
     deriving (Show, Generic, Eq)
+
+  vectorRect :: Point a -> Dimension a -> Rectangle a
+  vectorRect (Point x y) (Dimension w h) = Rectangle x y w h
 
   class ToSDL a b where
     toSDL :: a -> b
 
   instance ToSDL (Point a) (SDL.Point SDL.V2 a) where
     toSDL (Point x y) = SDL.P (SDL.V2 x y)
+  instance ToSDL (Dimension a) (SDL.V2 a) where
+    toSDL (Dimension x y) = SDL.V2 x y
   instance ToSDL (Rectangle a) (SDL.Rectangle a) where
     toSDL (Rectangle x y w h) = SDL.Rectangle (SDL.P (SDL.V2 x y)) (SDL.V2 w h)
 \end{code}

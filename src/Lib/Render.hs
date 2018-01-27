@@ -1,7 +1,7 @@
 module Lib.Render (renderLoop) where
   import Control.Concurrent.MVar
   import Control.Monad.State
-  import SDL (clear, present, Renderer)
+  import SDL
   import qualified SDL.Image
   import qualified SDL.Font
   import Lib.Model
@@ -19,7 +19,9 @@ module Lib.Render (renderLoop) where
   renderLoop_ :: MVar Game -> StateRC ()
   renderLoop_ model = do
     game <- liftIO $ readMVar model
-    getRenderer >>= clear
+    renderer <- getRenderer
+    rendererDrawColor renderer $= V4 0 0 0 255
+    clear renderer
     view game
-    getRenderer >>= present
+    present renderer
     renderLoop_ model
