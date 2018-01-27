@@ -9,7 +9,7 @@ module Lib.Action.MainMenu
   ) where
   import qualified Lib.Action.Menu as Menu
   import qualified Lib.Model.SaveData as SaveData
-  import qualified Lib.Model.Board.Simple
+  import Lib.Model.Board.Simple
   import Lib.Model
   import Data.Maybe
 
@@ -39,5 +39,5 @@ module Lib.Action.MainMenu
 
   newGame :: Action
   newGame game = return game
-    { room = Cutscene [] $ Battlefield [] emptyPlains 0
+    { room = Cutscene [] $ Battlefield $ Battle [] emptyPlains 0
     , saveData = SaveData.new }

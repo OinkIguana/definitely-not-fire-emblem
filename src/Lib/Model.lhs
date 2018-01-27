@@ -89,13 +89,14 @@ the provided room on completion.
     | PauseMenu Menu Room
     | Battlefield Battle
     | Cutscene [Sprite] Room
-    | Dialog [] Room
+    | Dialog [DialogStep] Room
 
   data Battle = Battle
     { players      :: [Player]
     , board        :: Board
     , turnCount    :: Int
     }
+  data DialogStep = Say Text Text
 \end{code}
 
 A \ident{Menu} can be thought of, generally, as a set of named \ident{options}, each of which
