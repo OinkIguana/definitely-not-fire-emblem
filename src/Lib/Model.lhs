@@ -20,6 +20,7 @@ module Lib.Model where
   import GHC.Generics
   import qualified SDL
   import Data.Text (Text)
+  import Data.Grid (Grid)
   import Data.Colour (Colour)
 \end{code}
 
@@ -79,12 +80,16 @@ In this case, the \ident{Menu} rooms are rather similar so they hold a shared re
 the \ident{Menu}, while a \ident{Battlefield} room is the more interesting one in which the gameplay
 actually takes place.
 
+\ident{Cutscene}s and \ident{Dialog}s just run through a predefined set of steps, transitioning to
+the provided room on completion.
+
 \begin{code}
   data Room
     = MainMenu Menu
     | PauseMenu Menu Room
     | Battlefield Battle
-    | Cutscene [Sprite]
+    | Cutscene [Sprite] Room
+    | Dialog [] Room
 
   data Battle = Battle
     { players      :: [Player]
@@ -212,12 +217,6 @@ elsewhere.
 
 \begin{code}
   newtype Board = Board (Grid Tile)
-
-  data Grid a = Grid
-    { width  :: Int
-    , height :: Int
-    , cells  :: [a]
-    }
 
   data Tile = Tile
     { terrain :: Terrain
