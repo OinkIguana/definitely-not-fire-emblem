@@ -54,14 +54,15 @@ sufficient to save and restore most of the player's game state.
 
 \begin{code}
   data Settings = Settings
-    -- TODO: what other options are needed?
     { combatAnimations   :: Bool -- whether combat should be animated
     , movementAnimations :: Bool -- whether movement should be animated
     , autoEnd            :: Bool -- whether the turn should end automatically when no actions remain
+    , dangerZoneDefault  :: Bool -- whether to show the danger zone by default
     }
 
   data Environment = Environment
-    { renderOffset :: Point Int  -- suggests that everything in the game should be rendered shifted by some distance
+    { renderOffset :: Point Int -- suggests that everything in the game should be rendered shifted by some distance
+    , dummy        :: ()
     }
 
   data SaveData = SaveData
@@ -158,23 +159,16 @@ unit's state to the player.
 
 \begin{code}
   data Unit = Unit
-    { role      :: Role
+    { race      :: Race
     , name      :: Text
     , stats     :: Stats
-    , equipment :: Maybe Equipment
+    , equipment :: [EquipmentSlot]
     , skills    :: [Skill]
     , sprite    :: Sprite
     }
 
-  data Role
-    = Tank
-    | Infantry
-    | Archer
-    | Cavalry
-    | Flyer
-    | CavalryArcher
-    | CavalryTank
-    | FlyerArcher
+  data Race
+    = Centaur
     -- TODO
 
   data Stats = Stats
@@ -186,12 +180,24 @@ unit's state to the player.
     , def :: Int
     , res :: Int
     , spd :: Int
-    , mov :: Int
     , lck :: Int
     , skl :: Int
+    , mov :: Int
     }
 
-  data Equipment = Equipment -- TODO
+  data EquipmentSlot
+    = OneOf [EquipmentSlot]
+    | Sword
+    | Spear
+    | Axe
+    | Hammer
+    | Bow
+    | Knife
+    | Shield
+    | Body
+    | Legs
+    | Head
+
   data Skill = Skill -- TODO
 \end{code}
 
@@ -250,7 +256,8 @@ a \ident{Sprite} -- things such as animations and special effects.
     | AnimationCycle SDL.Texture [Rectangle Int] Int
 
   data SpriteEffect
-    = Base SpriteBase
+    = Invisible
+    | Base SpriteBase
     | Position (Point Int) SpriteEffect
     | Movement (Point Int) (Point Int) SpriteEffect
     | ColourBlend (Colour Double) SpriteEffect -- TODO: does this require a blend mode

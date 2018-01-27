@@ -8,7 +8,7 @@ module Lib.Model.Game (new) where
   new = Game defaultSettings defaultEnvironment SaveData.new MainMenu.new False
 
   defaultSettings :: Settings
-  defaultSettings = Settings True True True
+  defaultSettings = Settings True True True False
 
   defaultEnvironment :: Environment
-  defaultEnvironment = Environment (Point 0 0)
+  defaultEnvironment = Environment (Point 0 0) ()
