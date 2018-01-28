@@ -6,10 +6,21 @@ module Lib.Model.Unit.Greek.Centaur
   import Lib.Model
 
   baseStats :: Stats
-  baseStats = Stats 32 32 19 7 19 8 24 14 19 8
+  baseStats = Stats
+    { mhp = 32
+    , chp = 32
+    , atk = 19
+    , mag = 7
+    , def = 19
+    , res = 8
+    , spd = 24
+    , lck = 14
+    , skl = 19
+    , mov = 8
+    }
 
   basic :: Unit
-  basic = Unit Centaur "Centaur warrior" baseStats [OneOf [Spear, Bow]] [] (Sprite Invisible)
+  basic = Unit Centaur "Centaur warrior" baseStats [OneOf [Spear, Bow]] [Trample] (Sprite Invisible)
 
   chiron :: Unit
   chiron = basic

@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 357c3e9ec8ea0f2cc9fc68b52ce52160caa20a5ce80bab733e587812935df60c
+-- hash: c844cdf464b8803466620305b7504c26bddb2adb2f9514363c6690e227461d5f
 
 name:           definitely-not-fire-emblem
 version:        0.1.0.0
@@ -50,6 +50,7 @@ library
       Lib.Action.SettingsMenu
       Lib.Constants
       Lib.Model
+      Lib.Model.Board
       Lib.Model.Board.Simple
       Lib.Model.Game
       Lib.Model.MainMenu
@@ -57,7 +58,11 @@ library
       Lib.Model.PauseMenu
       Lib.Model.SaveData
       Lib.Model.SettingsMenu
+      Lib.Model.Sprite
+      Lib.Model.Stage.Tutorial
       Lib.Model.Unit.Greek.Centaur
+      Lib.Model.Unit.Stealth.Assassin
+      Lib.Model.Unit.Stealth.Thief
       Lib.RC
       Lib.Render
       Lib.Resources.Fonts
@@ -67,7 +72,9 @@ library
       Lib.View.Menu
       Lib.View.PauseMenu
       Lib.View.Room
+      Lib.View.Sprite
       Lib.View.Tile
+      Lib.View.Unit
   other-modules:
       Paths_definitely_not_fire_emblem
   default-language: Haskell2010

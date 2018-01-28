@@ -22,6 +22,8 @@ module Lib.Model where
   import Data.Text (Text)
   import Data.Grid (Grid)
   import Data.Colour (Colour)
+  import Lib.RC
+  import Foreign.C.Types (CInt)
 \end{code}
 
 The \ident{Game} is what holds everything together, and serves as the model that is used to
@@ -175,10 +177,11 @@ unit's state to the player.
 
   data Race
     = Centaur
-    -- TODO
+    -- will this be a stealth game or a mythology game...
+    | Thief
+    | Assassin
 
   data Stats = Stats
-    -- TODO: which of these are relevant, and what else needs to be added
     { mhp :: Int
     , chp :: Int
     , atk :: Int
@@ -189,6 +192,8 @@ unit's state to the player.
     , lck :: Int
     , skl :: Int
     , mov :: Int
+    , snk :: Int
+    , vis :: Int
     }
 
   data EquipmentSlot
@@ -204,7 +209,10 @@ unit's state to the player.
     | Legs
     | Head
 
-  data Skill = Skill -- TODO
+  data Skill
+    = Trample
+    | Steal
+    | SneakAttack
 \end{code}
 
 The \ident{Board} is a representation of the actual battlefield. It is composed of a grid of tiles.
@@ -251,17 +259,18 @@ a \ident{Sprite} -- things such as animations and special effects.
   newtype Sprite = Sprite SpriteEffect
 
   data SpriteBase
-    = Static SDL.Texture (Rectangle Int)
-    | Animation SDL.Texture [Rectangle Int] Int
-    | AnimationCycle SDL.Texture [Rectangle Int] Int
+    = Static (Key SDL.Texture) (Rectangle CInt)
+    | Animation (Key SDL.Texture) [Rectangle CInt] Int
+    | AnimationCycle (Key SDL.Texture) [Rectangle CInt] Int
 
   data SpriteEffect
     = Invisible
     | Base SpriteBase
-    | Position (Point Int) SpriteEffect
-    | Movement (Point Int) (Point Int) SpriteEffect
+    | Position (Point CInt) SpriteEffect
+    | Scale (Dimension CInt) SpriteEffect
+    | Movement (Point CInt) (Point CInt) Int Int SpriteEffect
     | ColourBlend (Colour Double) SpriteEffect -- TODO: does this require a blend mode
-    | ParticleSystem (Point Int) [Point Int] SpriteEffect
+    | Particles (Point CInt) [Point CInt] SpriteEffect
     | Sequence [Sprite]
 \end{code}
 

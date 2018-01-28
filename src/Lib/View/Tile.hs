@@ -1,19 +1,22 @@
 {-# LANGUAGE NamedFieldPuns #-}
 module Lib.View.Tile (view) where
-  import SDL hiding (Point)
+  import SDL hiding (Point, unit)
   import Lib.Model
   import Lib.RC
   import Lib.Constants
+  import qualified Lib.View.Unit as Unit
 
   view :: Game -> Point Int -> Tile -> StateRC ()
-  view _ position Tile { terrain } = do
+  view game position Tile { terrain, unit } = do
     texture <- getTexture (textureFor terrain)
     renderer <- getRenderer
     copy renderer texture Nothing $ Just $ toSDL $ vectorRect scaledPosition tileSize
-    return ()
-      where Point x y = position
-            Dimension w h = tileSize
-            scaledPosition = Point (fromIntegral x * w) (fromIntegral y * h)
+    case unit of
+      Nothing   -> return ()
+      Just unit -> Unit.viewAtTile scaledPosition unit
+    where Point x y = position
+          Dimension w h = tileSize
+          scaledPosition = Point (fromIntegral x * w) (fromIntegral y * h)
 
   textureFor :: Terrain -> Key SDL.Texture
   textureFor Plain = keyFor "Lib.View.Tile.plain" plain

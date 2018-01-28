@@ -36,7 +36,7 @@ module Lib.Action (eventLoop) where
 
   keyPressed :: Scancode -> Action
   keyPressed ScancodeDown = MainMenu.nextOption >=> PauseMenu.nextOption
-  keyPressed ScancodeUp = MainMenu.previousOption >=> PauseMenu.nextOption
+  keyPressed ScancodeUp = MainMenu.previousOption >=> PauseMenu.previousOption
   keyPressed ScancodeReturn = MainMenu.selectOption >=> PauseMenu.selectOption
   keyPressed ScancodeEscape = pause
   keyPressed _ = return

@@ -39,16 +39,16 @@ module Data.Grid where
   cellAtIndex :: Int -> Grid a -> a
   cellAtIndex i g = cells g !! i
 
-  insertAt :: Int -> Int -> Grid a -> a -> Grid a
-  insertAt x y grid element = updateAt x y grid (const element)
+  insertAt :: Int -> Int -> a -> Grid a -> Grid a
+  insertAt x y element grid = updateAt x y (const element) grid
 
-  updateAt :: Int -> Int -> Grid a -> (a -> a) -> Grid a
-  updateAt x y grid f = grid { cells = updateAt_ (indexOf x y grid) (cells grid) f }
+  updateAt :: Int -> Int -> (a -> a) -> Grid a -> Grid a
+  updateAt x y f grid = grid { cells = updateAt_ (indexOf x y grid) f (cells grid) }
     where
-      updateAt_ :: Int -> [a] -> (a -> a) -> [a]
-      updateAt_ 0 (a : as) f = f a : as
-      updateAt_ n (a : as) f = a : updateAt_ (n - 1) as f
-      updateAt_ _ [] _ = undefined
+      updateAt_ :: Int -> (a -> a) -> [a] -> [a]
+      updateAt_ 0 f (a : as) = f a : as
+      updateAt_ n f (a : as) = a : updateAt_ (n - 1) f as
+      updateAt_ _ _ [] = undefined
 
   isTop :: Int -> Grid a -> Bool
   isTop = const . (==) 0
