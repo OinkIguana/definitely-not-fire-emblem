@@ -1,12 +1,7 @@
 module Lib.View (view) where
-  import qualified Lib.View.MainMenu as MainMenu
-  import qualified Lib.View.Battlefield as Battlefield
+  import qualified Lib.View.Room as Room
   import Lib.Model
   import Lib.RC
 
   view :: Game -> StateRC ()
-  view game =
-    case game of
-      Game { room = MainMenu menu } -> MainMenu.view game menu
-      Game { room = Battlefield battle } -> Battlefield.view game battle
-      _ -> return ()
+  view game = Room.view game (room game)

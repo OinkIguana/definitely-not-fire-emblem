@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 925bfdfcb29e1af3a7b32081e8f51a53b660f2e3006c7cb7fca5b47e15f35a06
+-- hash: 357c3e9ec8ea0f2cc9fc68b52ce52160caa20a5ce80bab733e587812935df60c
 
 name:           definitely-not-fire-emblem
 version:        0.1.0.0
@@ -46,6 +46,7 @@ library
       Lib.Action.Game
       Lib.Action.MainMenu
       Lib.Action.Menu
+      Lib.Action.PauseMenu
       Lib.Action.SettingsMenu
       Lib.Constants
       Lib.Model
@@ -53,6 +54,7 @@ library
       Lib.Model.Game
       Lib.Model.MainMenu
       Lib.Model.Menu
+      Lib.Model.PauseMenu
       Lib.Model.SaveData
       Lib.Model.SettingsMenu
       Lib.Model.Unit.Greek.Centaur
@@ -63,6 +65,8 @@ library
       Lib.View.Battlefield
       Lib.View.MainMenu
       Lib.View.Menu
+      Lib.View.PauseMenu
+      Lib.View.Room
       Lib.View.Tile
   other-modules:
       Paths_definitely_not_fire_emblem

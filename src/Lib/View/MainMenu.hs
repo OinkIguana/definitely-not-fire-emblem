@@ -1,6 +1,6 @@
 {-# LANGUAGE NamedFieldPuns #-}
 module Lib.View.MainMenu (view) where
-  import SDL (copy, queryTexture, TextureInfo(..), destroyTexture)
+  import SDL hiding (Rectangle)
   import Lib.RC
   import Lib.Model
   import Lib.View.Menu
@@ -8,7 +8,7 @@ module Lib.View.MainMenu (view) where
   view :: Game -> Menu -> StateRC ()
   view game menu = do
     renderer <- getRenderer
-    texture <- renderMenuQuick game menu
-    TextureInfo { textureWidth, textureHeight } <- queryTexture texture
-    copy renderer texture Nothing (Just $ toSDL $ Rectangle 0 0 textureWidth textureHeight)
-    destroyTexture texture
+    menuTexture <- renderMenuQuick game menu
+    TextureInfo { textureWidth, textureHeight } <- queryTexture menuTexture
+    copy renderer menuTexture Nothing (Just $ toSDL $ Rectangle 0 0 textureWidth textureHeight)
+    destroyTexture menuTexture

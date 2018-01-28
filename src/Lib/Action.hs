@@ -7,7 +7,10 @@ module Lib.Action (eventLoop) where
   import SDL.Input.Keyboard
   import SDL.Input.Mouse
   import Lib.Model hiding (Point)
-  import Lib.Action.MainMenu
+
+  import qualified Lib.Action.MainMenu as MainMenu
+  import qualified Lib.Action.PauseMenu as PauseMenu
+  import Lib.Action.Game (pause)
 
   eventLoop :: MVar Game -> IO ()
   eventLoop model = do
@@ -16,7 +19,7 @@ module Lib.Action (eventLoop) where
     putMVar model game
     unless (quit game) $ eventLoop model
 
-  processEvent :: Event -> Game -> IO Game
+  processEvent :: Event -> Action
   processEvent (Event timestamp payload) =
     case payload of
       KeyboardEvent keyboardData -> keyboardEvent keyboardData
@@ -26,46 +29,47 @@ module Lib.Action (eventLoop) where
       _ -> return
 
   -- Keyboard events
-  keyboardEvent :: KeyboardEventData -> Game -> IO Game
+  keyboardEvent :: KeyboardEventData -> Action
   keyboardEvent (KeyboardEventData _ Pressed _ (Keysym scancode _ _)) = keyPressed scancode
   keyboardEvent (KeyboardEventData _ Released _ (Keysym scancode _ _)) = keyReleased scancode
   keyboardEvent _ = return
 
-  keyPressed :: Scancode -> Game -> IO Game
-  keyPressed ScancodeDown = nextOption
-  keyPressed ScancodeUp = previousOption
-  keyPressed ScancodeReturn = selectOption
+  keyPressed :: Scancode -> Action
+  keyPressed ScancodeDown = MainMenu.nextOption >=> PauseMenu.nextOption
+  keyPressed ScancodeUp = MainMenu.previousOption >=> PauseMenu.nextOption
+  keyPressed ScancodeReturn = MainMenu.selectOption >=> PauseMenu.selectOption
+  keyPressed ScancodeEscape = pause
   keyPressed _ = return
 
-  keyReleased :: Scancode -> Game -> IO Game
+  keyReleased :: Scancode -> Action
   keyReleased _ = return
 
   -- Mouse events
-  mouseMotionEvent :: MouseMotionEventData -> Game -> IO Game
+  mouseMotionEvent :: MouseMotionEventData -> Action
   mouseMotionEvent (MouseMotionEventData _ _ buttons position delta) = mouseMoved buttons position delta
 
-  mouseMoved :: [MouseButton] -> Point V2 Int32 -> V2 Int32 -> Game -> IO Game
+  mouseMoved :: [MouseButton] -> Point V2 Int32 -> V2 Int32 -> Action
   mouseMoved _ _ _ = return
 
-  mouseButtonEvent :: MouseButtonEventData -> Game -> IO Game
+  mouseButtonEvent :: MouseButtonEventData -> Action
   mouseButtonEvent (MouseButtonEventData _ Pressed _ button _ position) = mouseButtonPressed button position
   mouseButtonEvent (MouseButtonEventData _ Released _ button _ position) = mouseButtonReleased button position
 
-  mouseButtonPressed :: MouseButton -> Point V2 Int32 -> Game -> IO Game
+  mouseButtonPressed :: MouseButton -> Point V2 Int32 -> Action
   mouseButtonPressed _ _ = return
 
-  mouseButtonReleased :: MouseButton -> Point V2 Int32 -> Game -> IO Game
+  mouseButtonReleased :: MouseButton -> Point V2 Int32 -> Action
   mouseButtonReleased _ _ = return
 
-  mouseWheelEvent :: MouseWheelEventData -> Game -> IO Game
+  mouseWheelEvent :: MouseWheelEventData -> Action
   mouseWheelEvent (MouseWheelEventData _ _ (V2 _ 0) _) = return
   mouseWheelEvent (MouseWheelEventData _ _ (V2 _ y) ScrollFlipped)  | y < 0 = mouseScrolledUp (-y)
                                                                     | y > 0 = mouseScrolledDown y
   mouseWheelEvent (MouseWheelEventData _ _ (V2 _ y) ScrollNormal)   | y < 0 = mouseScrolledDown (-y)
                                                                     | y > 0 = mouseScrolledUp y
 
-  mouseScrolledDown :: Int32 -> Game -> IO Game
+  mouseScrolledDown :: Int32 -> Action
   mouseScrolledDown _ = return
 
-  mouseScrolledUp :: Int32 -> Game -> IO Game
+  mouseScrolledUp :: Int32 -> Action
   mouseScrolledUp _ = return

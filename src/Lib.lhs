@@ -33,11 +33,12 @@ standard SDL behaviour.
 \begin{code}
     initializeAll -- TODO: probably don't need all systems
     -- TODO: figure out how graphics settings will work
+    Display { displayBoundsSize = V2 screenWidth screenHeight } <- head <$> getDisplays
     window <- createWindow "Definitely Not Fire Emblem"
       ( defaultWindow
           { windowBorder = False
           , windowMode = FullscreenDesktop
-          , windowInitialSize = V2 (CInt 1920) (CInt 1080)
+          , windowInitialSize = V2 screenWidth screenHeight
           }
       )
     renderer <- createRenderer window (-1)

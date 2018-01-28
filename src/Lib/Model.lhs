@@ -286,6 +286,9 @@ would expect. These should be moved to another file someday when I am in the moo
   vectorRect :: Point a -> Dimension a -> Rectangle a
   vectorRect (Point x y) (Dimension w h) = Rectangle x y w h
 
+  dimensions :: Rectangle a -> Dimension a
+  dimensions (Rectangle _ _ w h) = Dimension w h
+
   class ToSDL a b where
     toSDL :: a -> b
 
