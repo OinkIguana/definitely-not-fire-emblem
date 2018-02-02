@@ -1,5 +1,6 @@
 {-# LANGUAGE NamedFieldPuns #-}
 module Lib.View.Tile (view) where
+  import Data.Shape
   import SDL hiding (Point, unit)
   import Lib.Model
   import Lib.RC
@@ -10,7 +11,7 @@ module Lib.View.Tile (view) where
   view game position Tile { terrain, unit } = do
     texture <- getTexture (textureFor terrain)
     renderer <- getRenderer
-    copy renderer texture Nothing $ Just $ toSDL $ vectorRect scaledPosition tileSize
+    copy renderer texture Nothing $ Just $ toSDL $ vectorRectangle scaledPosition tileSize
     case unit of
       Nothing   -> return ()
       Just unit -> Unit.viewAtTile scaledPosition unit

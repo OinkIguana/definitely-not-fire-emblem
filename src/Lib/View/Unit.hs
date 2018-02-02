@@ -1,5 +1,6 @@
 {-# LANGUAGE NamedFieldPuns #-}
 module Lib.View.Unit (view, viewAtTile) where
+  import Data.Shape
   import SDL hiding (Point)
   import Lib.Model
   import Lib.RC

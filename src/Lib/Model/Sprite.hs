@@ -1,4 +1,5 @@
 module Lib.Model.Sprite where
+  import Data.Shape
   import Lib.Model
   import Foreign.C.Types (CInt)
 

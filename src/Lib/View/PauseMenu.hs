@@ -1,5 +1,6 @@
 {-# LANGUAGE NamedFieldPuns #-}
 module Lib.View.PauseMenu (view) where
+  import Data.Shape
   import SDL hiding (Rectangle)
   import Lib.RC
   import Lib.Model
@@ -23,7 +24,7 @@ module Lib.View.PauseMenu (view) where
   background :: Rectangle CInt -> Key Texture
   background box = keyFor "Lib.View.PauseMenu.background" $ do
     renderer <- getRenderer
-    texture <- createTexture renderer RGBA8888 TextureAccessTarget $ toSDL $ dimensions box
+    texture <- createTexture renderer RGBA8888 TextureAccessTarget $ (toSDL $ toDimension box)
     rendererRenderTarget renderer $= Just texture
     rendererDrawColor renderer $= V4 60 60 60 255
     fillRect renderer Nothing

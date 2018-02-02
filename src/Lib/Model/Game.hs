@@ -1,4 +1,5 @@
 module Lib.Model.Game (new) where
+  import Data.Shape
   import Data.Text
   import Lib.Model
   import qualified Lib.Model.MainMenu as MainMenu
@@ -11,4 +12,4 @@ module Lib.Model.Game (new) where
   defaultSettings = Settings True True True False
 
   defaultEnvironment :: Environment
-  defaultEnvironment = Environment (Point 0 0) ()
+  defaultEnvironment = Environment (Point 0 0) (Dimension 1 1)

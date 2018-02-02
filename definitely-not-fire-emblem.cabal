@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: c844cdf464b8803466620305b7504c26bddb2adb2f9514363c6690e227461d5f
+-- hash: c75205ce8c43542d2f0e3361cd708447611ab73532dd90c4620bce59aecf4912
 
 name:           definitely-not-fire-emblem
 version:        0.1.0.0
@@ -41,8 +41,10 @@ library
     , text
   exposed-modules:
       Data.Grid
+      Data.Shape
       Lib
       Lib.Action
+      Lib.Action.Board
       Lib.Action.Game
       Lib.Action.MainMenu
       Lib.Action.Menu

@@ -14,11 +14,11 @@ model have conflicting names, but I feel they are most easily manageable when la
 file as it is done here.
 
 \begin{code}
-{-# LANGUAGE DuplicateRecordFields, DeriveGeneric, MultiParamTypeClasses, FlexibleInstances #-}
+{-# LANGUAGE DuplicateRecordFields #-}
 
 module Lib.Model where
-  import GHC.Generics
   import qualified SDL
+  import Data.Shape
   import Data.Text (Text)
   import Data.Grid (Grid)
   import Data.Colour (Colour)
@@ -64,8 +64,8 @@ sufficient to save and restore most of the player's game state.
     }
 
   data Environment = Environment
-    { renderOffset :: Point Int -- suggests that everything in the game should be rendered shifted by some distance
-    , dummy        :: ()
+    { renderOffset :: Point Int -- suggests that everything on the screen should be rendered shifted by some distance
+    , renderScale  :: Dimension Float -- suggests that everything on the screen should be scaled by some amount
     }
 
   data SaveData = SaveData
@@ -225,7 +225,10 @@ The actual terrain types are varied and each have different effects which will b
 elsewhere.
 
 \begin{code}
-  newtype Board = Board (Grid Tile)
+  data Board = Board
+    { grid         :: Grid Tile
+    , selectedTile :: Maybe Int
+    }
 
   data Tile = Tile
     { terrain :: Terrain
@@ -279,34 +282,8 @@ element to be quickly retrieved. This provides a sort of weak reference mechanis
 model, which may or may not actually be useful when it comes time to implement this stuff. If
 needed, this can be updated to be a Lens or something.
 
-The other helper types, \ident{Point}, \ident{Dimension} and \ident{Rectangle} represent what you
-would expect. These should be moved to another file someday when I am in the mood.
-
 \begin{code}
   newtype GameRef a = GameRef (Game -> a)
-
-  data Point a     = Point     a a
-    deriving (Show, Generic, Eq)
-  data Dimension a = Dimension a a
-    deriving (Show, Generic, Eq)
-  data Rectangle a = Rectangle a a a a
-    deriving (Show, Generic, Eq)
-
-  vectorRect :: Point a -> Dimension a -> Rectangle a
-  vectorRect (Point x y) (Dimension w h) = Rectangle x y w h
-
-  dimensions :: Rectangle a -> Dimension a
-  dimensions (Rectangle _ _ w h) = Dimension w h
-
-  class ToSDL a b where
-    toSDL :: a -> b
-
-  instance ToSDL (Point a) (SDL.Point SDL.V2 a) where
-    toSDL (Point x y) = SDL.P (SDL.V2 x y)
-  instance ToSDL (Dimension a) (SDL.V2 a) where
-    toSDL (Dimension x y) = SDL.V2 x y
-  instance ToSDL (Rectangle a) (SDL.Rectangle a) where
-    toSDL (Rectangle x y w h) = SDL.Rectangle (SDL.P (SDL.V2 x y)) (SDL.V2 w h)
 \end{code}
 
 \end{document}

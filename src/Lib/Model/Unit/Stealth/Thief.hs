@@ -1,5 +1,6 @@
 {-# LANGUAGE OverloadedStrings, DuplicateRecordFields #-}
 module Lib.Model.Unit.Stealth.Thief where
+  import Data.Shape
   import SDL hiding (Rectangle)
   import Lib.Model
   import Lib.RC

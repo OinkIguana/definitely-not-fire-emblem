@@ -1,7 +1,8 @@
 {-# LANGUAGE NamedFieldPuns #-}
 module Lib.View.Menu (renderMenuQuick) where
-  import Control.Monad
+  import Data.Shape
   import Data.Text (Text)
+  import Control.Monad
   import qualified SDL
   import qualified SDL.Font as Font
   import Foreign.C.Types

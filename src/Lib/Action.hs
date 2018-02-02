@@ -10,6 +10,7 @@ module Lib.Action (eventLoop) where
 
   import qualified Lib.Action.MainMenu as MainMenu
   import qualified Lib.Action.PauseMenu as PauseMenu
+  import qualified Lib.Action.Board as Board
   import Lib.Action.Game (pause)
 
   eventLoop :: MVar Game -> IO ()
@@ -56,6 +57,7 @@ module Lib.Action (eventLoop) where
   mouseButtonEvent (MouseButtonEventData _ Released _ button _ position) = mouseButtonReleased button position
 
   mouseButtonPressed :: MouseButton -> Point V2 Int32 -> Action
+  mouseButtonPressed ButtonLeft point = Board.selectCellAtPoint point
   mouseButtonPressed _ _ = return
 
   mouseButtonReleased :: MouseButton -> Point V2 Int32 -> Action

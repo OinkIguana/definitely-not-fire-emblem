@@ -1,4 +1,5 @@
 module Lib.Constants where
+  import Data.Shape
   import Lib.Model
   import Foreign.C.Types
 
