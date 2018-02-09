@@ -228,7 +228,11 @@ elsewhere.
     { grid         :: Grid Tile
     }
 
-  data TileHighlight = Select | Danger | FogOfWar
+  data TileHighlight
+    = Select
+    | Danger
+    | FogOfWar
+    deriving (Eq, Ord)
 
   data Tile = Tile
     { terrain   :: Terrain

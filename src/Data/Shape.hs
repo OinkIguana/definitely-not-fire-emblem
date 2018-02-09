@@ -1,25 +1,25 @@
 {-# LANGUAGE MultiParamTypeClasses, FlexibleInstances #-}
 module Data.Shape where
   import qualified SDL
-  data Num a => Point a     = Point     a a
+  data Num a ⇒ Point a     = Point     a a
     deriving (Show, Eq)
-  data Num a => Dimension a = Dimension a a
+  data Num a ⇒ Dimension a = Dimension a a
     deriving (Show, Eq)
-  data Num a => Rectangle a = Rectangle a a a a
+  data Num a ⇒ Rectangle a = Rectangle a a a a
     deriving (Show, Eq)
 
-  vectorRectangle :: Num a => Point a -> Dimension a -> Rectangle a
+  vectorRectangle ∷ Num a ⇒ Point a → Dimension a → Rectangle a
   vectorRectangle (Point x y) (Dimension w h) = Rectangle x y w h
 
-  scale :: (Num a, Shape s) => Rectangle a -> s a -> Rectangle a
+  scale ∷ (Num a, Shape s) ⇒ Rectangle a → s a → Rectangle a
   scale (Rectangle x y w h) shape = Rectangle x y (w * sx) (h * sy)
     where Dimension sx sy = toDimension shape
 
-  shift :: (Num a, Shape s) => Rectangle a -> s a -> Rectangle a
+  shift ∷ (Num a, Shape s) ⇒ Rectangle a → s a → Rectangle a
   shift (Rectangle x y w h) shape = Rectangle (x + dx) (y + dy) w h
     where Point dx dy = toPoint shape
 
-  project :: (Num a, Fractional a, Shape b, Shape c, Shape d) => b a -> c a -> d a -> Rectangle a
+  project ∷ (Num a, Fractional a, Shape b, Shape c, Shape d) ⇒ b a → c a → d a → Rectangle a
   project from onto orig = Rectangle x y w h
     where Rectangle ox oy ow oh = toRectangle orig
           Rectangle sx sy sw sh = toRectangle from
@@ -34,9 +34,9 @@ module Data.Shape where
           h = oh * yscale
 
   class Shape s where
-    toRectangle :: Num a => s a -> Rectangle a
-    toPoint     :: Num a => s a -> Point a
-    toDimension :: Num a => s a -> Dimension a
+    toRectangle ∷ Num a ⇒ s a → Rectangle a
+    toPoint     ∷ Num a ⇒ s a → Point a
+    toDimension ∷ Num a ⇒ s a → Dimension a
 
   instance Shape Point where
     toRectangle (Point x y) = Rectangle x y 1 1
@@ -53,7 +53,7 @@ module Data.Shape where
     toPoint (Rectangle x y _ _) = Point x y
     toDimension (Rectangle _ _ w h) = Dimension w h
 
-  instance Num a => Num (Point a) where
+  instance Num a ⇒ Num (Point a) where
     Point x1 y1 + Point x2 y2 = Point (x1 + x2) (y1 + y2)
     Point x1 y1 - Point x2 y2 = Point (x1 - x2) (y1 - y2)
     Point x1 y1 * Point x2 y2 = Point (x1 * x2) (y1 * y2)
@@ -61,7 +61,7 @@ module Data.Shape where
     signum (Point x y) = Point (signum x) (signum y)
     fromInteger i = Point (fromInteger i) (fromInteger i)
 
-  instance Num a => Num (Dimension a) where
+  instance Num a ⇒ Num (Dimension a) where
     Dimension x1 y1 + Dimension x2 y2 = Dimension (x1 + x2) (y1 + y2)
     Dimension x1 y1 - Dimension x2 y2 = Dimension (x1 - x2) (y1 - y2)
     Dimension x1 y1 * Dimension x2 y2 = Dimension (x1 * x2) (y1 * y2)
@@ -69,7 +69,7 @@ module Data.Shape where
     signum (Dimension x y) = Dimension (signum x) (signum y)
     fromInteger i = Dimension (fromInteger i) (fromInteger i)
 
-  instance (Ord a, Num a) => Num (Rectangle a) where
+  instance (Ord a, Num a) ⇒ Num (Rectangle a) where
     Rectangle x1 y1 w1 h1 + Rectangle x2 y2 _ _ = Rectangle (x1 + x2) (y1 + y2) w1 h1
     Rectangle x1 y1 w1 h1 - Rectangle x2 y2 _ _ = Rectangle (x1 - x2) (y1 - y2) w1 h1
     Rectangle x1 y1 w1 h1 * Rectangle _ _ w2 h2 = Rectangle x1 y1 (w1 * w2) (h1 * h2)
@@ -79,23 +79,19 @@ module Data.Shape where
     signum (Rectangle x y w h) = Rectangle 0 0 (signum w) (signum h)
     fromInteger i = Rectangle 0 0 (fromInteger i) (fromInteger i)
 
-  instance Functor Point where
-    fmap f (Point x y) = Point (f x) (f y)
-  instance Functor Dimension where
-    fmap f (Dimension w h) = Dimension (f w) (f h)
-  instance Functor Rectangle where
-    fmap f (Rectangle x y w h) = Rectangle (f x) (f y) (f w) (f h)
-
-
   class ToSDL a b where
-    toSDL   :: a -> b
-    fromSDL :: b -> a
-  instance Num a => ToSDL (Point a) (SDL.Point SDL.V2 a) where
-    toSDL (Point x y) = SDL.P $ SDL.V2 x y
-    fromSDL (SDL.P (SDL.V2 x y)) = Point x y
-  instance Num a => ToSDL (Dimension a) (SDL.V2 a) where
-    toSDL (Dimension x y) = SDL.V2 x y
-    fromSDL (SDL.V2 x y) = Dimension x y
-  instance Num a => ToSDL (Rectangle a) (SDL.Rectangle a) where
-    toSDL (Rectangle x y w h) = SDL.Rectangle (SDL.P $ SDL.V2 x y) (SDL.V2 w h)
-    fromSDL (SDL.Rectangle (SDL.P (SDL.V2 x y)) (SDL.V2 w h)) = Rectangle x y w h
+    toSDL   ∷ a → b
+  class FromSDL a b where
+    fromSDL ∷ a → b
+  instance (Integral a, Num b) ⇒ ToSDL (Point a) (SDL.Point SDL.V2 b) where
+    toSDL (Point x y) = SDL.P $ SDL.V2 (fromIntegral x) (fromIntegral y)
+  instance (Integral a, Num b) ⇒ FromSDL (SDL.Point SDL.V2 a) (Point b) where
+    fromSDL (SDL.P (SDL.V2 x y)) = Point (fromIntegral x) (fromIntegral y)
+  instance (Integral a, Num b) ⇒ ToSDL (Dimension a) (SDL.V2 b) where
+    toSDL (Dimension x y) = SDL.V2 (fromIntegral x) (fromIntegral y)
+  instance (Integral a, Num b) ⇒ FromSDL (SDL.V2 a) (Dimension b) where
+    fromSDL (SDL.V2 x y) = Dimension (fromIntegral x) (fromIntegral y)
+  instance (Integral a, Num b) ⇒ ToSDL (Rectangle a) (SDL.Rectangle b) where
+    toSDL (Rectangle x y w h) = SDL.Rectangle (SDL.P $ SDL.V2 (fromIntegral x) (fromIntegral y)) (SDL.V2 (fromIntegral w) (fromIntegral h))
+  instance (Integral a, Num b) ⇒ FromSDL (SDL.Rectangle a) (Rectangle b) where
+    fromSDL (SDL.Rectangle (SDL.P (SDL.V2 x y)) (SDL.V2 w h)) = Rectangle (fromIntegral x) (fromIntegral y) (fromIntegral w) (fromIntegral h)

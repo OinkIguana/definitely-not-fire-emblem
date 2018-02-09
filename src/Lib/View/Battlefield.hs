@@ -1,4 +1,5 @@
 module Lib.View.Battlefield (view) where
+  import Prelude.Unicode
   import Data.Shape
   import Data.Grid
   import Lib.Model

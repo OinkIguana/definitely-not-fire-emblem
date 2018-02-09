@@ -32,6 +32,13 @@ dependencies:
 - symbol
 - mtl
 
+default-extensions:
+- OverloadedStrings
+- RecordWildCards
+- NamedFieldPuns
+- UnicodeSyntax
+- DuplicateRecordFields
+
 library:
   source-dirs: src
 
@@ -45,12 +52,6 @@ executables:
     - -with-rtsopts=-N
     dependencies:
     - definitely-not-fire-emblem
-    extensions:
-    - OverloadedStrings
-    - RecordWildCards
-    - NamedFieldPuns
-    - UnicodeSyntax
-    - DuplicateRecordFields
 
 tests:
   dnfe-test:

@@ -1,27 +1,30 @@
-module Lib.Action.Board where
-  import
-  import Control.Monad
+module Lib.Action.Board (selectCellAtPoint) where
+  import Prelude.Unicode
+  import Data.Shape
+  import Data.Grid
   import Data.Int
-  import SDL (Point(..), V2(..))
+  import qualified Data.Set as Set
+  import Control.Monad
+  import qualified SDL (Point, V2)
   import Lib.Model
-  import Lib.Model.Board
+  import Lib.Model.Board hiding (indexOf)
   import Lib.Constants
 
-  selectCellAtPoint ∷ Point V2 Int32 → Action
-  selectCellAtPoint sdlPoint Game { room = Battlefield Battle { board = { grid }, .. }, .. }
-    = Game { room = Battlefield Battle { board = selectedAt (Point x y) board, .. }, .. }
-      where Rectangle x y _ _ = project (vectorRectangle (Point 0 0) tileSize)
-                                        (Rectangle 0 0 1 1)
-                                        (vectorRectangle (fmap fromInteger $ fromSDL sdlPoint) tileSize)
+  selectCellAtPoint ∷ SDL.Point SDL.V2 Int32 → Action
+  selectCellAtPoint sdlPoint Game { room = Battlefield Battle { board = Board { grid }, .. }, .. }
+    = let Dimension w h = tileSize
+          Rectangle x y _ _ = project (Dimension (fromIntegral w) (fromIntegral h)) (Rectangle 0 0 1 1) (fromSDL sdlPoint :: Point Float)
+          newBoard = Board $ maybe grid (flip selectedAt grid) $ indexOf (floor x) (floor y) grid
+      in return Game { room = Battlefield Battle { board = newBoard, .. }, .. }
 
 
-  selectedAt ∷ Point a → Grid Tile → Grid Tile
-  selectedAt point grid =
-    fmap (uncurry $ selectAt point) indexedGrid
+  selectedAt ∷ Int → Grid Tile → Grid Tile
+  selectedAt index grid =
+    grid { cells = fmap (uncurry $ selectAt index) indexedGrid }
       where
-        indexedGrid = zipWithM (,) (fmap (positionIn grid) [0..]) grid
-        selectAt ∷ Point a → Point a → Tile → Tile
+        indexedGrid = zip [0..] $ cells grid
+        selectAt ∷ Int → Int → Tile → Tile
         selectAt target point tile =
           if target == point
-            then tile { highlight = insert Selected $ highlight tile }
-            else tile { highlight = delete Selected $ highlight tile }
+            then tile { highlight = Set.insert Select $ highlight tile }
+            else tile { highlight = Set.delete Select $ highlight tile }
