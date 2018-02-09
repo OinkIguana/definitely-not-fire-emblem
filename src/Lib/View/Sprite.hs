@@ -1,4 +1,3 @@
-{-# LANGUAGE NamedFieldPuns #-}
 module Lib.View.Sprite (view) where
   import Data.Shape
   import SDL hiding (Point, Rectangle)

@@ -1,4 +1,3 @@
-{-# LANGUAGE RecordWildCards, NamedFieldPuns #-}
 module Lib.Action.SettingsMenu where
   import Lib.Model
 

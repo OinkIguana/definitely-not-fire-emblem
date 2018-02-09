@@ -1,4 +1,3 @@
-{-# LANGUAGE OverloadedStrings, DuplicateRecordFields #-}
 module Lib.Model.Unit.Greek.Centaur
   ( basic
   , chiron

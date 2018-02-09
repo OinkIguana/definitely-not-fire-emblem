@@ -1,5 +1,5 @@
-{-# LANGUAGE NamedFieldPuns #-}
 module Lib.View.Tile (view) where
+  import Control.Monad.Unicode
   import Data.Shape
   import SDL hiding (Point, unit)
   import Lib.Model
@@ -7,28 +7,47 @@ module Lib.View.Tile (view) where
   import Lib.Constants
   import qualified Lib.View.Unit as Unit
 
-  view :: Game -> Point Int -> Tile -> StateRC ()
-  view game position Tile { terrain, unit } = do
-    texture <- getTexture (textureFor terrain)
-    renderer <- getRenderer
-    copy renderer texture Nothing $ Just $ toSDL $ vectorRectangle scaledPosition tileSize
+  view ∷ Game → Point Int → Tile → StateRC ()
+  view game position Tile { terrain, unit, highlight } = do
+    texture ← getTexture (textureFor terrain)
+    renderer ← getRenderer
+    let cellPosition = Just $ toSDL $ vectorRectangle scaledPosition tileSize
+    copy renderer texture Nothing position
+    highlightFor highlight ≫= \texture → copy renderer texture Nothing cellPosition
     case unit of
-      Nothing   -> return ()
-      Just unit -> Unit.viewAtTile scaledPosition unit
+      Nothing   → return ()
+      Just unit → Unit.viewAtTile scaledPosition unit
     where Point x y = position
           Dimension w h = tileSize
           scaledPosition = Point (fromIntegral x * w) (fromIntegral y * h)
 
-  textureFor :: Terrain -> Key SDL.Texture
-  textureFor Plain = keyFor "Lib.View.Tile.plain" plain
+  textureFor ∷ Terrain → Key SDL.Texture
+  textureFor Plain = keyFor "Lib.View.Tile::Terrain.Plain" plain
   textureFor _     = undefined
 
-  plain :: StateRC Texture
+  plain ∷ StateRC Texture
   plain = do
-    renderer <- getRenderer
-    texture <- createTexture renderer RGBA8888 TextureAccessTarget $ toSDL tileSize
+    renderer ← getRenderer
+    texture ← createTexture renderer RGBA8888 TextureAccessTarget $ toSDL tileSize
     rendererRenderTarget renderer $= Just texture
     rendererDrawColor renderer $= V4 0 255 0 255
+    fillRect renderer Nothing
+    rendererDrawColor renderer $= V4 0 0 0 255
+    drawRect renderer Nothing
+    rendererRenderTarget renderer $= Nothing
+    return texture
+
+
+  highlightFor ∷ TileHighlight → Maybe (Key SDL.Texture)
+  highlightFor Selected = Just $ keyFor "Lib.View.Tile::TileHighlight.Selected" selected
+  highlightFor _ = Nothing
+
+  selected ∷ StateRC Texture
+  selected = do
+    renderer ← getRenderer
+    texture ← createTexture renderer RGBA8888 TextureAccessTarget $ toSDL tileSize
+    rendererRenderTarget renderer $= Just texture
+    rendererDrawColor renderer $= V4 255 255 255 0.4
     fillRect renderer Nothing
     rendererDrawColor renderer $= V4 0 0 0 255
     drawRect renderer Nothing

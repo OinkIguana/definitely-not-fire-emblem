@@ -1,4 +1,3 @@
-{-# LANGUAGE RecordWildCards #-}
 module Lib.Action.MainMenu
   ( nextOption
   , previousOption

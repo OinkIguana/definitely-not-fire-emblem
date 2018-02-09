@@ -79,6 +79,14 @@ module Data.Shape where
     signum (Rectangle x y w h) = Rectangle 0 0 (signum w) (signum h)
     fromInteger i = Rectangle 0 0 (fromInteger i) (fromInteger i)
 
+  instance Functor Point where
+    fmap f (Point x y) = Point (f x) (f y)
+  instance Functor Dimension where
+    fmap f (Dimension w h) = Dimension (f w) (f h)
+  instance Functor Rectangle where
+    fmap f (Rectangle x y w h) = Rectangle (f x) (f y) (f w) (f h)
+
+
   class ToSDL a b where
     toSDL   :: a -> b
     fromSDL :: b -> a

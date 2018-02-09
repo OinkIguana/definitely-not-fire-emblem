@@ -1,4 +1,3 @@
-{-# LANGUAGE NamedFieldPuns #-}
 module Data.Grid where
   data Direction = N | NE | E | SE | S | SW | W | NW
 
@@ -11,6 +10,9 @@ module Data.Grid where
     fmap f g = g { cells = fmap f (cells g) }
   instance Foldable Grid where
     foldr f b Grid{ cells } = foldr f b cells
+  instance Applicative Grid where
+    pure = Grid 1 1
+    (Grid w h f) <*> Grid _ _ i = Grid w h (f <*> i)
 
   squareGrid :: Int -> a -> Grid a
   squareGrid s = newGrid s s
@@ -30,11 +32,13 @@ module Data.Grid where
   positionIn :: Grid a -> Int -> (Int, Int)
   positionIn Grid { width } index = (index `mod` width, index `div` width)
 
-  indexOf :: Int -> Int -> Grid a -> Int
-  indexOf x y Grid { width } = y * width + x
+  indexOf :: Int -> Int -> Grid a -> Maybe Int
+  indexOf x y Grid { width, height } =
+    if 0 <= index && index < width * height then Just index else Nothing
+    where index = y * width + x
 
-  cellAt :: Int -> Int -> Grid a -> a
-  cellAt x y grid = cellAtIndex (indexOf x y grid) grid
+  cellAt :: Int -> Int -> Grid a -> Maybe a
+  cellAt x y grid = indexOf x y grid >>= flip cellAtIndex grid
 
   cellAtIndex :: Int -> Grid a -> a
   cellAtIndex i g = cells g !! i
@@ -43,7 +47,7 @@ module Data.Grid where
   insertAt x y element grid = updateAt x y (const element) grid
 
   updateAt :: Int -> Int -> (a -> a) -> Grid a -> Grid a
-  updateAt x y f grid = grid { cells = updateAt_ (indexOf x y grid) f (cells grid) }
+  updateAt x y f grid = maybe grid (\index -> grid { cells = updateAt_ index f (cells grid) }) (indexOf x y grid)
     where
       updateAt_ :: Int -> (a -> a) -> [a] -> [a]
       updateAt_ 0 f (a : as) = f a : as
@@ -69,22 +73,14 @@ module Data.Grid where
   isCorner x y grid = (isLeft x grid || isRight x grid) && (isTop y grid || isBottom y grid)
 
   neighbour :: Direction -> Int -> Int -> Grid a -> Maybe Int
-  neighbour N x y grid  | isTop y grid    = Nothing
-                        | otherwise       = Just $ indexOf x (y - 1) grid
-  neighbour S x y grid  | isBottom y grid = Nothing
-                        | otherwise       = Just $ indexOf x (y + 1) grid
-  neighbour E x y grid  | isRight x grid  = Nothing
-                        | otherwise       = Just $ indexOf (x + 1) y grid
-  neighbour W x y grid  | isLeft x grid   = Nothing
-                        | otherwise       = Just $ indexOf (x - 1) y grid
-  neighbour NW x y grid | isTop y grid || isLeft x grid     = Nothing
-                        | otherwise                         = Just $ indexOf (x - 1) (y - 1) grid
-  neighbour NE x y grid | isTop y grid || isRight x grid    = Nothing
-                        | otherwise                         = Just $ indexOf (x + 1) (y - 1) grid
-  neighbour SW x y grid | isBottom y grid || isLeft x grid  = Nothing
-                        | otherwise                         = Just $ indexOf (x - 1) (y + 1) grid
-  neighbour SE x y grid | isBottom y grid || isRight x grid = Nothing
-                        | otherwise                         = Just $ indexOf (x + 1) (y + 1) grid
+  neighbour N x y grid  = indexOf x       (y - 1) grid
+  neighbour S x y grid  = indexOf x       (y + 1) grid
+  neighbour E x y grid  = indexOf (x + 1) y       grid
+  neighbour W x y grid  = indexOf (x - 1) y       grid
+  neighbour NW x y grid = indexOf (x - 1) (y - 1) grid
+  neighbour NE x y grid = indexOf (x + 1) (y - 1) grid
+  neighbour SW x y grid = indexOf (x - 1) (y + 1) grid
+  neighbour SE x y grid = indexOf (x + 1) (y + 1) grid
 
   distance :: Int -> Int -> Int -> Int -> Int
   distance x1 y1 x2 y2 = abs (x1 - x2) + abs (y1 - y2)

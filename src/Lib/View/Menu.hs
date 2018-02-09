@@ -1,4 +1,3 @@
-{-# LANGUAGE NamedFieldPuns #-}
 module Lib.View.Menu (renderMenuQuick) where
   import Data.Shape
   import Data.Text (Text)

@@ -1,4 +1,3 @@
-{-# LANGUAGE NamedFieldPuns, RecordWildCards #-}
 module Lib.Action.Menu
   ( nextOption
   , previousOption

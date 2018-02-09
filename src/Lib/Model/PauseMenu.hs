@@ -1,4 +1,3 @@
-{-# LANGUAGE OverloadedStrings #-}
 module Lib.Model.PauseMenu where
   import Lib.Model
   import Data.Text

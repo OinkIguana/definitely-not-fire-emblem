@@ -22,6 +22,7 @@ description:         Please see the README on Github at <https://github.com/oink
 
 dependencies:
 - base >= 4.7 && < 5
+- base-unicode-symbols
 - containers
 - text
 - colour
@@ -44,6 +45,12 @@ executables:
     - -with-rtsopts=-N
     dependencies:
     - definitely-not-fire-emblem
+    extensions:
+    - OverloadedStrings
+    - RecordWildCards
+    - NamedFieldPuns
+    - UnicodeSyntax
+    - DuplicateRecordFields
 
 tests:
   dnfe-test:

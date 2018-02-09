@@ -1,4 +1,3 @@
-{-# LANGUAGE NamedFieldPuns #-}
 module Lib.View.Unit (view, viewAtTile) where
   import Data.Shape
   import SDL hiding (Point)

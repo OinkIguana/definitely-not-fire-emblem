@@ -12,8 +12,6 @@ It is in this function that SDL is initialized, and the threads for graphics, vi
 user input are created. By the time this function returns, the game window is closed.
 
 \begin{code}
-{-# LANGUAGE OverloadedStrings #-}
-
 module Lib (play) where
   import Control.Concurrent
   import Control.Monad

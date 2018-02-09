@@ -1,4 +1,3 @@
-{-# LANGUAGE OverloadedStrings, DuplicateRecordFields #-}
 module Lib.Model.Unit.Stealth.Assassin where
   import Lib.Model
 

@@ -1,4 +1,3 @@
-{-# LANGUAGE OverloadedStrings #-}
 module Lib.Model.MainMenu (new) where
   import Data.Text
   import Lib.Model

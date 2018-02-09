@@ -1,4 +1,3 @@
-{-# LANGUAGE RecordWildCards, DuplicateRecordFields #-}
 module Lib.Action.PauseMenu
   ( nextOption
   , previousOption

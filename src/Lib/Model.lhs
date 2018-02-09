@@ -14,14 +14,13 @@ model have conflicting names, but I feel they are most easily manageable when la
 file as it is done here.
 
 \begin{code}
-{-# LANGUAGE DuplicateRecordFields #-}
-
 module Lib.Model where
   import qualified SDL
   import Data.Shape
   import Data.Text (Text)
   import Data.Grid (Grid)
   import Data.Colour (Colour)
+  import Data.Set (Set)
   import Lib.RC
   import Foreign.C.Types (CInt)
 \end{code}
@@ -227,12 +226,14 @@ elsewhere.
 \begin{code}
   data Board = Board
     { grid         :: Grid Tile
-    , selectedTile :: Maybe Int
     }
 
+  data TileHighlight = Select | Danger | FogOfWar
+
   data Tile = Tile
-    { terrain :: Terrain
-    , unit    :: Maybe Unit
+    { terrain   :: Terrain
+    , unit      :: Maybe Unit
+    , highlight :: Set TileHighlight
     }
 
   data Terrain

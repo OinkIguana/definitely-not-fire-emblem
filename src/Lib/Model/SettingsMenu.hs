@@ -1,4 +1,3 @@
-{-# LANGUAGE OverloadedStrings, NamedFieldPuns #-}
 module Lib.Model.SettingsMenu (new) where
   import Data.Text
   import Lib.Model

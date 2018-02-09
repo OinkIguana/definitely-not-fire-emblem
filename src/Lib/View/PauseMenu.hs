@@ -1,4 +1,3 @@
-{-# LANGUAGE NamedFieldPuns #-}
 module Lib.View.PauseMenu (view) where
   import Data.Shape
   import SDL hiding (Rectangle)
