@@ -1,5 +1,6 @@
 module Data.Grid where
   import Prelude.Unicode
+  import Data.List
   data Direction = N | NE | E | SE | S | SW | W | NW
 
   data Grid a = Grid
@@ -37,6 +38,10 @@ module Data.Grid where
   indexOf x y Grid { width, height } =
     if 0 <= index && index < width * height then Just index else Nothing
     where index = y * width + x
+
+  findIndexOf ∷ (a → Bool) → Grid a → Maybe Int
+  findIndexOf predicate grid =
+    fromInteger ∘ fst <$> find (predicate ∘ snd) (zip [0..] (cells grid))
 
   cellAt ∷ Int → Int → Grid a → Maybe a
   cellAt x y grid = flip cellAtIndex grid <$> indexOf x y grid
